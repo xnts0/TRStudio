@@ -241,39 +241,42 @@ button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block
 <div class="toolbar">
   <button type="button" onclick="toggleEditMode()" id="editToggleBtn">Edit: Off</button>
   <button type="button" onclick="saveData()">Save</button>
-  <button type="button" onclick="exportJSON()">Export</button>
+  <button type="button" onclick="exportJSON()">Export JSON</button><button type="button" onclick="showPublishGuide()">Publish Guide</button>
   <button type="button" onclick="document.getElementById('importJsonInput').click()">Import</button>
   <button type="button" onclick="resetData()">Reset</button>
   <button type="button" class="btn-live" onclick="window.open('./index.html','_blank')">↗ Live</button>
   <input id="importJsonInput" class="hidden-input" type="file" accept="application/json" onchange="importJSON(event)">
 </div>
-<div class="tip">Toggle <strong>Edit</strong> → double-click text → <strong>Cam</strong> for media.</div>
+<div class="tip">Toggle <strong>Edit</strong> → double-click text → <strong>Cam</strong> for media. For GitHub Pages storage, keep files in <strong>/assets/uploads</strong> and paste the public URL.</div>
 
 <div class="modal-backdrop" id="modalBackdrop"><div class="modal" id="modalBox"></div></div>
 
 <script>
-const STORAGE_KEY='turkiPortfolioDataV4',THEME_KEY='turkiPortfolioTheme',LANG_KEY='turkiPortfolioLang';
+const STORAGE_KEY='turkiPortfolioDataV4',THEME_KEY='turkiPortfolioTheme',LANG_KEY='turkiPortfolioLang',CONTENT_URL='./content.json';
 let editMode=false,lang=localStorage.getItem(LANG_KEY)||'en';
 
 function cryptoRandom(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function escapeHtml(s=''){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function escapeAttr(s=''){return escapeHtml(s).replace(/'/g,'&#39;')}
-function t(obj){if(!obj)return '';if(typeof obj==='string')return obj;return obj[lang]||obj.en||''}
-function tSet(obj,val){if(typeof obj==='string')return val;obj[lang]=val;return obj}
+function t(obj){if(!obj)return '';if(typeof obj==='string')return obj;const v=obj[lang]||obj.en||obj.ar||'';return typeof v==='string'?v:''}
+function tSet(obj,val){if(!obj||typeof obj!=='object')return {[lang]:val,en:lang==='en'?val:'',ar:lang==='ar'?val:''};obj[lang]=val;return obj}
 function pathGet(p){let c=data;for(const k of p.split('.'))c=c?.[k];return c}
 function pathSet(p,v){const k=p.split('.');let c=data;for(let i=0;i<k.length-1;i++)c=c[k[i]];c[k.at(-1)]=v}
 function fileToDataUrl(file,cb){if(!file)return;const r=new FileReader();r.onload=()=>cb(r.result,file);r.readAsDataURL(file)}
 
 const defaultData={brand:{mark:'TB VISUALS',logo:'1000160206.jpg'},hero:{name:'TURKI',role:{en:'DIRECTOR OF PHOTOGRAPHY',ar:'مدير التصوير'},summary:{en:'Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.',ar:'التقاط الواقع الخام وتحويله إلى فن سينمائي. متخصص في التصوير الاحترافي والفيديو الحركي.'},subtitle:{en:'Commercials / Editorial / Motion / Creative Direction',ar:'إعلانات / تحرير / حركة / إخراج إبداعي'},mediaType:'image',mediaUrl:'https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80',specs:['SONY α7S III','24-70mm G-MASTER','S-LOG3','120FPS']},portfolio:{title:{en:'THE REEL',ar:'الأعمال'},description:{en:'Selected motion and still work',ar:'أعمال مختارة من الصور والفيديو'}},cta:{portfolio:{en:'Access Portfolio ↓',ar:'عرض الأعمال ↓'},book:{en:'Book Now',ar:'احجز الآن'}},reels:[{id:cryptoRandom(),title:{en:'Editorial Motion',ar:'أعمال تحريرية'},description:{en:'A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.',ar:'مجموعة منتقاة من الإخراج البصري والبورتريه والسرد القصصي.'},items:[{id:cryptoRandom(),type:'image',title:{en:'Shot 1',ar:'لقطة ١'},description:{en:'Editorial portrait framing',ar:'تأطير بورتريه تحريري'},src:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80'},{id:cryptoRandom(),type:'video',title:{en:'Shot 2',ar:'لقطة ٢'},description:{en:'Raw video showcase',ar:'عرض فيديو خام'},src:'https://www.w3schools.com/html/mov_bbb.mp4',thumb:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80'},{id:cryptoRandom(),type:'image',title:{en:'Shot 3',ar:'لقطة ٣'},description:{en:'Documentary texture',ar:'ملمس وثائقي'},src:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=700&q=80'},{id:cryptoRandom(),type:'image',title:{en:'Shot 4',ar:'لقطة ٤'},description:{en:'Commercial still frame',ar:'إطار إعلاني ثابت'},src:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=700&q=80'}]}],credentialsTitle:{en:'Credentials',ar:'الشهادات'},credentials:[{id:cryptoRandom(),title:{en:'Sony Alpha Cinema Master',ar:'سوني ألفا سينما ماستر'},year:'2023',image:''},{id:cryptoRandom(),title:{en:'Adobe Certified Professional',ar:'أدوبي محترف معتمد'},year:'2022',image:''},{id:cryptoRandom(),title:{en:'Advanced Drone Pilot (Part 107)',ar:'طيار درون متقدم (الجزء 107)'},year:'2021',image:''}],contactTitle:{en:'Direct Line',ar:'تواصل مباشر'},contacts:[{id:cryptoRandom(),label:{en:'Instagram',ar:'انستقرام'},value:'@turki_visuals',href:'#'},{id:cryptoRandom(),label:{en:'WhatsApp',ar:'واتساب'},value:'+966 5X XXX XXXX',href:'#'},{id:cryptoRandom(),label:{en:'Email',ar:'بريد إلكتروني'},value:'booking@turki.com',href:'mailto:booking@turki.com'}]};
 
-function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(!r)return clone(defaultData);return JSON.parse(r)}catch{return clone(defaultData)}}
+function toLangObject(v){if(v&&typeof v==='object')return {en:v.en||'',ar:v.ar||''};const str=typeof v==='string'?v:'';return {en:str,ar:str}}
+function normalizeData(raw){const d=clone(defaultData);const src=(raw&&typeof raw==='object')?raw:{};d.brand={...d.brand,...src.brand};d.hero={...d.hero,...src.hero};d.hero.role=toLangObject(src?.hero?.role??d.hero.role);d.hero.summary=toLangObject(src?.hero?.summary??d.hero.summary);d.hero.subtitle=toLangObject(src?.hero?.subtitle??d.hero.subtitle);d.portfolio={...d.portfolio,...src.portfolio};d.portfolio.title=toLangObject(src?.portfolio?.title??d.portfolio.title);d.portfolio.description=toLangObject(src?.portfolio?.description??d.portfolio.description);d.cta={...d.cta,...src.cta};d.cta.portfolio=toLangObject(src?.cta?.portfolio??d.cta.portfolio);d.cta.book=toLangObject(src?.cta?.book??d.cta.book);d.credentialsTitle=toLangObject(src?.credentialsTitle??d.credentialsTitle);d.contactTitle=toLangObject(src?.contactTitle??d.contactTitle);d.reels=Array.isArray(src.reels)?src.reels:d.reels;d.credentials=Array.isArray(src.credentials)?src.credentials:d.credentials;d.contacts=Array.isArray(src.contacts)?src.contacts:d.contacts;return d}
+function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(r)return normalizeData(JSON.parse(r));}catch{}return normalizeData(defaultData)}
 let data=loadData();
 
-function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));pulseTip('Saved — refresh <strong>live site</strong> to see changes.')}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));pulseTip('Saved locally. Export JSON and commit to publish on GitHub Pages.')}
 function resetData(){if(!confirm('Reset all?'))return;data=clone(defaultData);saveData();render()}
 function exportJSON(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='portfolio-content.json';a.click();URL.revokeObjectURL(a.href)}
 function importJSON(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);saveData();render();pulseTip('Imported.')}catch{alert('Invalid JSON.')}};r.readAsText(f);e.target.value=''}
+function showPublishGuide(){alert('GitHub Pages publish steps:\n1) Export JSON from admin.\n2) Save as content.json in repo root.\n3) Put media in assets/uploads/.\n4) Commit + push, then Pages deploys automatically.')}
 
 /* Theme */
 function initTheme(){const th=localStorage.getItem(THEME_KEY)||'dark';document.documentElement.setAttribute('data-theme',th);document.getElementById('themeToggle').textContent=th==='dark'?'☀️':'🌙'}
@@ -299,12 +302,12 @@ function render(){
   document.getElementById('brandLogo').src=data.brand.logo;document.getElementById('brandMark').textContent=data.brand.mark;
   document.getElementById('heroName').textContent=data.hero.name;document.getElementById('heroRole').textContent=t(data.hero.role);
   document.getElementById('heroSummary').textContent=t(data.hero.summary);document.getElementById('heroSubtitle').textContent=t(data.hero.subtitle);
-  document.getElementById('heroSpecs').innerHTML=data.hero.specs.map(s=>`<span>${escapeHtml(s)}</span>`).join('');
+  document.getElementById('heroSpecs').innerHTML=(Array.isArray(data.hero.specs)?data.hero.specs:[]).map(s=>`<span>${escapeHtml(s)}</span>`).join('');
   document.getElementById('portfolioTitle').textContent=t(data.portfolio.title);document.getElementById('portfolioDesc').textContent=t(data.portfolio.description);
   document.getElementById('credentialsTitle').textContent=t(data.credentialsTitle);document.getElementById('contactTitle').textContent=t(data.contactTitle);
   renderHeroMedia();
 
-  document.getElementById('reelsContainer').innerHTML=data.reels.map((reel,idx)=>{const rep=reel.items.length>1?[...reel.items,...reel.items]:reel.items;const dur=Math.max(16,reel.items.length*6);return`<div class="reel-block"><div class="reel-actions"><button class="inline-btn" type="button" onclick="openReelModal('${reel.id}')">Edit</button><button class="inline-btn" type="button" onclick="removeReel('${reel.id}')">Del</button></div><div class="reel-head"><div><div class="reel-title editable" data-path="reels.${idx}.title">${escapeHtml(t(reel.title))}</div><div class="reel-desc editable" data-path="reels.${idx}.description">${escapeHtml(t(reel.description))}</div></div></div><div class="film-strip"><div class="reel-track" style="animation-duration:${dur}s">${rep.map(i=>renderFrame(reel.id,i)).join('')||'<div style="padding:30px;font-weight:700;color:rgba(0,0,0,.4)">No items</div>'}</div><button class="inline-btn plus-under-reel" type="button" onclick="openMediaModal('reelAdd','${reel.id}')">+ Add</button></div></div>`}).join('');
+  document.getElementById('reelsContainer').innerHTML=(Array.isArray(data.reels)?data.reels:[]).map((reel,idx)=>{const rep=reel.items.length>1?[...reel.items,...reel.items]:reel.items;const dur=Math.max(16,reel.items.length*6);return`<div class="reel-block"><div class="reel-actions"><button class="inline-btn" type="button" onclick="openReelModal('${reel.id}')">Edit</button><button class="inline-btn" type="button" onclick="removeReel('${reel.id}')">Del</button></div><div class="reel-head"><div><div class="reel-title editable" data-path="reels.${idx}.title">${escapeHtml(t(reel.title))}</div><div class="reel-desc editable" data-path="reels.${idx}.description">${escapeHtml(t(reel.description))}</div></div></div><div class="film-strip"><div class="reel-track" style="animation-duration:${dur}s">${rep.map(i=>renderFrame(reel.id,i)).join('')||'<div style="padding:30px;font-weight:700;color:rgba(0,0,0,.4)">No items</div>'}</div><button class="inline-btn plus-under-reel" type="button" onclick="openMediaModal('reelAdd','${reel.id}')">+ Add</button></div></div>`}).join('');
 
   document.getElementById('credentialsList').innerHTML=data.credentials.map((c,i)=>`<li><span class="cred-title${c.image?' has-image':''}" ${c.image?`onclick="openCredImage('${escapeAttr(c.image)}','${escapeAttr(t(c.title))}')"`:''}>${escapeHtml(t(c.title))}</span><span class="cred-year">${escapeHtml(c.year)}</span><button class="inline-btn" type="button" onclick="openCredModal(${i})">Edit</button><button class="inline-btn" type="button" onclick="removeCredential('${c.id}')">Del</button></li>`).join('');
 

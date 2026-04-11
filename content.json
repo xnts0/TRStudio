@@ -1,0 +1,31 @@
+{
+  "brand": {
+    "mark": "TB VISUALS",
+    "logo": "1000160206.jpg"
+  },
+  "hero": {
+    "name": "TURKI",
+    "role": {"en": "DIRECTOR OF PHOTOGRAPHY", "ar": "مدير التصوير"},
+    "summary": {
+      "en": "Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.",
+      "ar": "التقاط الواقع الخام وتحويله إلى فن سينمائي. متخصص في التصوير الاحترافي والفيديو الحركي."
+    },
+    "subtitle": {"en": "Commercials / Editorial / Motion / Creative Direction", "ar": "إعلانات / تحرير / حركة / إخراج إبداعي"},
+    "mediaType": "image",
+    "mediaUrl": "https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80",
+    "specs": ["SONY α7S III", "24-70mm G-MASTER", "S-LOG3", "120FPS"]
+  },
+  "portfolio": {
+    "title": {"en": "THE REEL", "ar": "الأعمال"},
+    "description": {"en": "Selected motion and still work", "ar": "أعمال مختارة من الصور والفيديو"}
+  },
+  "cta": {
+    "portfolio": {"en": "Access Portfolio ↓", "ar": "عرض الأعمال ↓"},
+    "book": {"en": "Book Now", "ar": "احجز الآن"}
+  },
+  "reels": [],
+  "credentialsTitle": {"en": "Credentials", "ar": "الشهادات"},
+  "credentials": [],
+  "contactTitle": {"en": "Direct Line", "ar": "تواصل مباشر"},
+  "contacts": []
+}

@@ -282,6 +282,7 @@ img,video{max-width:100%;display:block}
 const STORAGE_KEY='turkiPortfolioDataV4';
 const THEME_KEY='turkiPortfolioTheme';
 const LANG_KEY='turkiPortfolioLang';
+const CONTENT_URL='./content.json';
 
 function cryptoRandom(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
 
@@ -323,12 +324,24 @@ const defaultData={
 };
 
 function clone(o){return JSON.parse(JSON.stringify(o))}
-function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(!r)return clone(defaultData);return JSON.parse(r)}catch{return clone(defaultData)}}
+function toLangObject(v){if(v&&typeof v==='object')return {en:v.en||'',ar:v.ar||''};const str=typeof v==='string'?v:'';return {en:str,ar:str}}
+function normalizeData(raw){const d=clone(defaultData);const src=(raw&&typeof raw==='object')?raw:{};d.brand={...d.brand,...src.brand};d.hero={...d.hero,...src.hero};d.hero.role=toLangObject(src?.hero?.role??d.hero.role);d.hero.summary=toLangObject(src?.hero?.summary??d.hero.summary);d.hero.subtitle=toLangObject(src?.hero?.subtitle??d.hero.subtitle);d.portfolio={...d.portfolio,...src.portfolio};d.portfolio.title=toLangObject(src?.portfolio?.title??d.portfolio.title);d.portfolio.description=toLangObject(src?.portfolio?.description??d.portfolio.description);d.cta={...d.cta,...src.cta};d.cta.portfolio=toLangObject(src?.cta?.portfolio??d.cta.portfolio);d.cta.book=toLangObject(src?.cta?.book??d.cta.book);d.credentialsTitle=toLangObject(src?.credentialsTitle??d.credentialsTitle);d.contactTitle=toLangObject(src?.contactTitle??d.contactTitle);d.reels=Array.isArray(src.reels)?src.reels:d.reels;d.credentials=Array.isArray(src.credentials)?src.credentials:d.credentials;d.contacts=Array.isArray(src.contacts)?src.contacts:d.contacts;return d}
+async function loadData(){
+  try{
+    const r=localStorage.getItem(STORAGE_KEY);
+    if(r)return normalizeData(JSON.parse(r));
+  }catch{}
+  try{
+    const res=await fetch(CONTENT_URL,{cache:'no-store'});
+    if(res.ok){const j=await res.json();const n=normalizeData(j);localStorage.setItem(STORAGE_KEY,JSON.stringify(n));return n;}
+  }catch{}
+  return normalizeData(defaultData);
+}
 function escapeHtml(s=''){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function escapeAttr(s=''){return escapeHtml(s).replace(/'/g,'&#39;')}
-function t(obj){if(!obj)return '';if(typeof obj==='string')return obj;return obj[lang]||obj.en||''}
+function t(obj){if(!obj)return '';if(typeof obj==='string')return obj;const v=obj[lang]||obj.en||obj.ar||'';return typeof v==='string'?v:''}
 
-const data=loadData();
+let data=clone(defaultData);
 let lang=localStorage.getItem(LANG_KEY)||'en';
 
 /* Theme */
@@ -345,7 +358,7 @@ function applyLang(l){
   document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');
   document.documentElement.setAttribute('lang',l);
   document.getElementById('langToggle').textContent=l==='en'?'AR':'EN';
-  document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.getAttribute(`data-${l}`)});
+  document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.getAttribute(`data-${l}`)||el.getAttribute('data-en')||''});
   render();
 }
 document.getElementById('langToggle').addEventListener('click',toggleLang);
@@ -374,7 +387,7 @@ function render(){
   document.getElementById('heroRole').textContent=t(data.hero.role);
   document.getElementById('heroSummary').textContent=t(data.hero.summary);
   document.getElementById('heroSubtitle').textContent=t(data.hero.subtitle);
-  document.getElementById('heroSpecs').innerHTML=data.hero.specs.map(s=>`<span>${escapeHtml(s)}</span>`).join('');
+  document.getElementById('heroSpecs').innerHTML=(Array.isArray(data.hero.specs)?data.hero.specs:[]).map(s=>`<span>${escapeHtml(s)}</span>`).join('');
   document.getElementById('portfolioTitle').textContent=t(data.portfolio.title);
   document.getElementById('portfolioDesc').textContent=t(data.portfolio.description);
   document.getElementById('credentialsTitle').textContent=t(data.credentialsTitle);
@@ -383,19 +396,19 @@ function render(){
   document.getElementById('ctaBook').textContent=t(data.cta?.book)||'Book Now';
   renderHeroMedia();
 
-  document.getElementById('reelsContainer').innerHTML=data.reels.map(reel=>{
+  document.getElementById('reelsContainer').innerHTML=(Array.isArray(data.reels)?data.reels:[]).map(reel=>{
     const rep=reel.items.length>1?[...reel.items,...reel.items]:reel.items;
     const dur=Math.max(16,reel.items.length*6);
     return`<div class="reel-block"><div class="reel-head"><div><div class="reel-title">${escapeHtml(t(reel.title))}</div><div class="reel-desc">${escapeHtml(t(reel.description))}</div></div></div><div class="film-strip"><div class="reel-track" style="animation-duration:${dur}s">${rep.map(i=>renderFrame(reel.id,i)).join('')}</div></div></div>`;
   }).join('');
 
-  document.getElementById('credentialsList').innerHTML=data.credentials.map(c=>`
+  document.getElementById('credentialsList').innerHTML=(Array.isArray(data.credentials)?data.credentials:[]).map(c=>`
     <li>
       <span class="cred-title${c.image?' has-image':''}" ${c.image?`onclick="openCredImage('${escapeAttr(c.image)}','${escapeAttr(t(c.title))}')" style="cursor:pointer"`:''}>${escapeHtml(t(c.title))}</span>
       <span class="cred-year">${escapeHtml(c.year)}</span>
     </li>`).join('');
 
-  document.getElementById('contactLinks').innerHTML=data.contacts.map(c=>`
+  document.getElementById('contactLinks').innerHTML=(Array.isArray(data.contacts)?data.contacts:[]).map(c=>`
     <a href="${escapeAttr(c.href||'#')}" target="_blank" rel="noopener noreferrer">
       <span>${escapeHtml(t(c.label))}</span>
       <span>→ ${escapeHtml(c.value)}</span>
@@ -434,7 +447,7 @@ function updateTimecode(){const el=document.getElementById('timecode');if(!el)re
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox({target:document.getElementById('lightbox'),currentTarget:document.getElementById('lightbox')})});
 window.addEventListener('scroll',()=>{document.getElementById('topBar').classList.toggle('scrolled',window.scrollY>80)},{passive:true});
 setInterval(updateTimecode,1000/24);
-render();
+loadData().then(d=>{data=d;render();});
 </script>
 </body>
 </html>
