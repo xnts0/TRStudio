@@ -246,18 +246,18 @@ button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block
 <div id="lightbox" onclick="closeLightbox(event)"><button class="close-lb" type="button" onclick="closeLightbox(event)">CLOSE ✕</button><div id="lightbox-inner"><div id="lightbox-content"></div><div class="lb-meta"><h4 id="lbTitle"></h4><p id="lbDesc"></p></div></div></div>
 
 <div class="toolbar">
-  <button type="button" onclick="toggleEditMode()" id="editToggleBtn">Edit: Off</button>
+  <button type="button" onclick="toggleEditMode()" id="editToggleBtn" data-en="Edit: Off" data-ar="التحرير: متوقف">Edit: Off</button>
   <details class="file-menu">
-    <summary>File</summary>
+    <summary data-en="File" data-ar="ملف">File</summary>
     <div class="file-list">
-      <button type="button" onclick="saveData()">Save</button>
-      <button type="button" onclick="exportJSON()">Export JSON</button>
-      <button type="button" onclick="document.getElementById('importJsonInput').click()">Import JSON</button>
-      <button type="button" onclick="showPublishGuide()">Publish Guide</button>
-      <button type="button" onclick="resetData()">Reset</button>
+      <button type="button" onclick="saveData()" data-en="Save" data-ar="حفظ">Save</button>
+      <button type="button" onclick="exportJSON()" data-en="Export JSON" data-ar="تصدير JSON">Export JSON</button>
+      <button type="button" onclick="document.getElementById('importJsonInput').click()" data-en="Import JSON" data-ar="استيراد JSON">Import JSON</button>
+      <button type="button" onclick="showPublishGuide()" data-en="Publish Guide" data-ar="دليل النشر">Publish Guide</button>
+      <button type="button" onclick="resetData()" data-en="Reset" data-ar="إعادة تعيين">Reset</button>
     </div>
   </details>
-  <button type="button" class="btn-live" onclick="window.open('./index.html','_blank')">↗ Live</button>
+  <button type="button" class="btn-live" onclick="window.open('./index.html','_blank')" data-en="↗ Live" data-ar="↗ المعاينة">↗ Live</button>
   <input id="importJsonInput" class="hidden-input" type="file" accept="application/json" onchange="importJSON(event)">
 </div>
 <div class="tip">Toggle <strong>Edit</strong> → double-click text → <strong>Cam</strong> for media. For GitHub Pages storage, keep files in <strong>/assets/uploads</strong> and paste the public URL.</div>
@@ -286,11 +286,11 @@ function normalizeData(raw){const d=clone(defaultData);const src=(raw&&typeof ra
 function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(r)return normalizeData(JSON.parse(r));}catch{}return normalizeData(defaultData)}
 let data=loadData();
 
-function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));pulseTip('Saved locally. Export JSON and commit to publish on GitHub Pages.')}
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));pulseTip(lang==='ar'?'تم الحفظ محليًا. صدّر JSON ثم ارفعه إلى GitHub Pages.':'Saved locally. Export JSON and commit to publish on GitHub Pages.')}
 function resetData(){if(!confirm('Reset all?'))return;data=clone(defaultData);saveData();render()}
 function exportJSON(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='portfolio-content.json';a.click();URL.revokeObjectURL(a.href)}
 function importJSON(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);saveData();render();pulseTip('Imported.')}catch{alert('Invalid JSON.')}};r.readAsText(f);e.target.value=''}
-function showPublishGuide(){alert('GitHub Pages publish steps:\n1) Export JSON from admin.\n2) Save as content.json in repo root.\n3) Put media in assets/uploads/.\n4) Commit + push, then Pages deploys automatically.')}
+function showPublishGuide(){alert(lang==='ar'?'خطوات النشر عبر GitHub Pages:\n1) صدّر JSON من لوحة الإدارة.\n2) احفظه باسم content.json في جذر المشروع.\n3) ضع الملفات في assets/uploads/.\n4) نفّذ commit ثم push وسيتم النشر تلقائيًا.':'GitHub Pages publish steps:\n1) Export JSON from admin.\n2) Save as content.json in repo root.\n3) Put media in assets/uploads/.\n4) Commit + push, then Pages deploys automatically.')}
 
 /* Theme */
 function initTheme(){const th=localStorage.getItem(THEME_KEY)||'dark';document.documentElement.setAttribute('data-theme',th);document.getElementById('themeToggle').textContent=th==='dark'?'☀️':'🌙'}
@@ -298,12 +298,12 @@ function toggleTheme(){const c=document.documentElement.getAttribute('data-theme
 document.getElementById('themeToggle').addEventListener('click',toggleTheme);initTheme();
 
 /* Language */
-function applyLang(){document.documentElement.setAttribute('data-lang',lang);document.documentElement.setAttribute('dir',lang==='ar'?'rtl':'ltr');document.documentElement.setAttribute('lang',lang);document.getElementById('langToggle').textContent=lang==='en'?'AR':'EN';document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.getAttribute(`data-${lang}`)||el.getAttribute('data-en')||''});render()}
+function applyLang(){document.documentElement.setAttribute('data-lang',lang);document.documentElement.setAttribute('dir',lang==='ar'?'rtl':'ltr');document.documentElement.setAttribute('lang',lang);document.getElementById('langToggle').textContent=lang==='en'?'AR':'EN';document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.getAttribute(`data-${lang}`)||el.getAttribute('data-en')||''});document.getElementById('editToggleBtn').textContent=lang==='ar'?`التحرير: ${editMode?'مفعل':'متوقف'}`:`Edit: ${editMode?'On':'Off'}`;render()}
 function toggleLang(){lang=lang==='en'?'ar':'en';localStorage.setItem(LANG_KEY,lang);applyLang()}
 document.getElementById('langToggle').addEventListener('click',toggleLang);
 
 /* Edit mode */
-function toggleEditMode(){editMode=!editMode;document.body.classList.toggle('edit-mode',editMode);document.getElementById('editToggleBtn').textContent=`Edit: ${editMode?'On':'Off'}`;pulseTip(editMode?'<strong>Edit on</strong>. Double-click text, click <strong>Cam</strong> for media.':'Edit off.')}
+function toggleEditMode(){editMode=!editMode;document.body.classList.toggle('edit-mode',editMode);document.getElementById('editToggleBtn').textContent=lang==='ar'?`التحرير: ${editMode?'مفعل':'متوقف'}`:`Edit: ${editMode?'On':'Off'}`;pulseTip(editMode?(lang==='ar'?'<strong>تم تفعيل التحرير</strong>. انقر مرتين على النص، واستخدم <strong>Cam</strong> للوسائط.':'<strong>Edit on</strong>. Double-click text, click <strong>Cam</strong> for media.'):(lang==='ar'?'تم إيقاف التحرير.':'Edit off.'))}
 function pulseTip(msg){document.querySelector('.tip').innerHTML=msg}
 
 /* Render */
