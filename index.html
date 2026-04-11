@@ -70,6 +70,9 @@
 [data-lang="ar"] .role-badge::after{content:'';width:48px;height:1px;background:linear-gradient(270deg,transparent,var(--accent))}
 [data-lang="ar"] .nav-links a::after{transform-origin:left}
 [data-lang="ar"] .nav-links a:hover::after{transform-origin:right}
+[data-lang="ar"] .bio-content h1{line-height:1.02;font-size:clamp(2.8rem,7vw,6rem)}
+[data-lang="ar"] .section-title{font-size:clamp(2.2rem,5vw,4rem)}
+[data-lang="ar"] .hero-summary{font-size:1.2rem}
 
 /* ── Reset ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -149,6 +152,7 @@ img,video{max-width:100%;display:block}
 .reel-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:28px;flex-wrap:wrap}
 .reel-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:700}
 .reel-desc{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:var(--text-dim);max-width:740px}
+.bio-content h1,.section-title,.reel-title{overflow-wrap:anywhere}
 
 /* Film Strip */
 .film-strip{background:var(--film-bg);padding:48px 0 66px;position:relative;transform:rotate(.8deg);box-shadow:var(--film-strip-shadow);overflow:hidden;transition:background .5s}
@@ -221,8 +225,8 @@ img,video{max-width:100%;display:block}
   </div>
   <div class="nav-right">
     <div class="nav-links">
-      <a href="#work" data-en="Portfolio" data-ar="الأعمال">Portfolio</a>
-      <a href="#credentials" data-en="Credentials" data-ar="الشهادات">Credentials</a>
+      <a href="#work" data-en="Portfolio" data-ar="المعرض">Portfolio</a>
+      <a href="#credentials" data-en="Credentials" data-ar="الاعتمادات">Credentials</a>
       <a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a>
     </div>
     <button class="nav-toggle lang-toggle" id="langToggle" aria-label="Toggle language">EN</button>
@@ -290,34 +294,34 @@ const defaultData={
   brand:{mark:'TB VISUALS',logo:'1000160206.jpg'},
   hero:{
     name:'TURKI',
-    role:{en:'DIRECTOR OF PHOTOGRAPHY',ar:'مدير التصوير'},
-    summary:{en:'Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.',ar:'التقاط الواقع الخام وتحويله إلى فن سينمائي. متخصص في التصوير الاحترافي والفيديو الحركي.'},
-    subtitle:{en:'Commercials / Editorial / Motion / Creative Direction',ar:'إعلانات / تحرير / حركة / إخراج إبداعي'},
+    role:{en:'DIRECTOR OF PHOTOGRAPHY',ar:'مدير التصوير السينمائي'},
+    summary:{en:'Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.',ar:'أحوّل المشاهد الواقعية إلى لغة بصرية سينمائية، مع تركيز على التصوير التحريري الراقي والفيديو الحركي.'},
+    subtitle:{en:'Commercials / Editorial / Motion / Creative Direction',ar:'إعلانات / تصوير تحريري / فيديو حركي / إخراج إبداعي'},
     mediaType:'image',
     mediaUrl:'https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80',
     specs:['SONY α7S III','24-70mm G-MASTER','S-LOG3','120FPS']
   },
-  portfolio:{title:{en:'THE REEL',ar:'الأعمال'},description:{en:'Selected motion and still work',ar:'أعمال مختارة من الصور والفيديو'}},
-  cta:{portfolio:{en:'Access Portfolio ↓',ar:'عرض الأعمال ↓'},book:{en:'Book Now',ar:'احجز الآن'}},
+  portfolio:{title:{en:'THE REEL',ar:'المعرض'},description:{en:'Selected motion and still work',ar:'مختارات من أعمال الصورة والفيديو'}},
+  cta:{portfolio:{en:'Access Portfolio ↓',ar:'تصفح المعرض ↓'},book:{en:'Book Now',ar:'احجز الآن'}},
   reels:[{
-    id:cryptoRandom(),title:{en:'Editorial Motion',ar:'أعمال تحريرية'},
-    description:{en:'A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.',ar:'مجموعة منتقاة من الإخراج البصري والبورتريه والسرد القصصي.'},
+    id:cryptoRandom(),title:{en:'Editorial Motion',ar:'سرد بصري تحريري'},
+    description:{en:'A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.',ar:'شريط مختار يجمع الإخراج البصري والبورتريه وبناء المزاج والسرد الإعلاني.'},
     items:[
-      {id:cryptoRandom(),type:'image',title:{en:'Shot 1',ar:'لقطة ١'},description:{en:'Editorial portrait framing',ar:'تأطير بورتريه تحريري'},src:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80'},
-      {id:cryptoRandom(),type:'video',title:{en:'Shot 2',ar:'لقطة ٢'},description:{en:'Raw video showcase',ar:'عرض فيديو خام'},src:'https://www.w3schools.com/html/mov_bbb.mp4',thumb:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80'},
-      {id:cryptoRandom(),type:'image',title:{en:'Shot 3',ar:'لقطة ٣'},description:{en:'Documentary texture',ar:'ملمس وثائقي'},src:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=700&q=80'},
-      {id:cryptoRandom(),type:'image',title:{en:'Shot 4',ar:'لقطة ٤'},description:{en:'Commercial still frame',ar:'إطار إعلاني ثابت'},src:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=700&q=80'}
+      {id:cryptoRandom(),type:'image',title:{en:'Shot 1',ar:'لقطة أولى'},description:{en:'Editorial portrait framing',ar:'تأطير بورتريه تحريري'},src:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80'},
+      {id:cryptoRandom(),type:'video',title:{en:'Shot 2',ar:'لقطة ثانية'},description:{en:'Raw video showcase',ar:'عرض فيديو خام'},src:'https://www.w3schools.com/html/mov_bbb.mp4',thumb:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80'},
+      {id:cryptoRandom(),type:'image',title:{en:'Shot 3',ar:'لقطة ثالثة'},description:{en:'Documentary texture',ar:'ملمس وثائقي'},src:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=700&q=80'},
+      {id:cryptoRandom(),type:'image',title:{en:'Shot 4',ar:'لقطة رابعة'},description:{en:'Commercial still frame',ar:'إطار إعلاني ثابت'},src:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=700&q=80'}
     ]
   }],
-  credentialsTitle:{en:'Credentials',ar:'الشهادات'},
+  credentialsTitle:{en:'Credentials',ar:'الاعتمادات'},
   credentials:[
-    {id:cryptoRandom(),title:{en:'Sony Alpha Cinema Master',ar:'سوني ألفا سينما ماستر'},year:'2023',image:''},
-    {id:cryptoRandom(),title:{en:'Adobe Certified Professional',ar:'أدوبي محترف معتمد'},year:'2022',image:''},
-    {id:cryptoRandom(),title:{en:'Advanced Drone Pilot (Part 107)',ar:'طيار درون متقدم (الجزء 107)'},year:'2021',image:''}
+    {id:cryptoRandom(),title:{en:'Sony Alpha Cinema Master',ar:'اعتماد سوني ألفا للسينما'},year:'2023',image:''},
+    {id:cryptoRandom(),title:{en:'Adobe Certified Professional',ar:'محترف أدوبي المعتمد'},year:'2022',image:''},
+    {id:cryptoRandom(),title:{en:'Advanced Drone Pilot (Part 107)',ar:'طيار طائرات مسيّرة متقدم (107)'},year:'2021',image:''}
   ],
   contactTitle:{en:'Direct Line',ar:'تواصل مباشر'},
   contacts:[
-    {id:cryptoRandom(),label:{en:'Instagram',ar:'انستقرام'},value:'@turki_visuals',href:'#'},
+    {id:cryptoRandom(),label:{en:'Instagram',ar:'إنستغرام'},value:'@turki_visuals',href:'#'},
     {id:cryptoRandom(),label:{en:'WhatsApp',ar:'واتساب'},value:'+966 5X XXX XXXX',href:'#'},
     {id:cryptoRandom(),label:{en:'Email',ar:'بريد إلكتروني'},value:'booking@turki.com',href:'mailto:booking@turki.com'}
   ]

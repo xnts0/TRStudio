@@ -5,26 +5,26 @@
   },
   "hero": {
     "name": "TURKI",
-    "role": {"en": "DIRECTOR OF PHOTOGRAPHY", "ar": "مدير التصوير"},
+    "role": {"en": "DIRECTOR OF PHOTOGRAPHY", "ar": "مدير التصوير السينمائي"},
     "summary": {
       "en": "Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.",
-      "ar": "التقاط الواقع الخام وتحويله إلى فن سينمائي. متخصص في التصوير الاحترافي والفيديو الحركي."
+      "ar": "أحوّل المشاهد الواقعية إلى لغة بصرية سينمائية، مع تركيز على التصوير التحريري الراقي والفيديو الحركي."
     },
-    "subtitle": {"en": "Commercials / Editorial / Motion / Creative Direction", "ar": "إعلانات / تحرير / حركة / إخراج إبداعي"},
+    "subtitle": {"en": "Commercials / Editorial / Motion / Creative Direction", "ar": "إعلانات / تصوير تحريري / فيديو حركي / إخراج إبداعي"},
     "mediaType": "image",
     "mediaUrl": "https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80",
     "specs": ["SONY α7S III", "24-70mm G-MASTER", "S-LOG3", "120FPS"]
   },
   "portfolio": {
-    "title": {"en": "THE REEL", "ar": "الأعمال"},
-    "description": {"en": "Selected motion and still work", "ar": "أعمال مختارة من الصور والفيديو"}
+    "title": {"en": "THE REEL", "ar": "المعرض"},
+    "description": {"en": "Selected motion and still work", "ar": "مختارات من أعمال الصورة والفيديو"}
   },
   "cta": {
-    "portfolio": {"en": "Access Portfolio ↓", "ar": "عرض الأعمال ↓"},
+    "portfolio": {"en": "Access Portfolio ↓", "ar": "تصفح المعرض ↓"},
     "book": {"en": "Book Now", "ar": "احجز الآن"}
   },
   "reels": [],
-  "credentialsTitle": {"en": "Credentials", "ar": "الشهادات"},
+  "credentialsTitle": {"en": "Credentials", "ar": "الاعتمادات"},
   "credentials": [],
   "contactTitle": {"en": "Direct Line", "ar": "تواصل مباشر"},
   "contacts": []

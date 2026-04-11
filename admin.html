@@ -138,10 +138,14 @@ button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block
 .lb-meta{margin-top:18px}.lb-meta h4{font-family:'Syne',sans-serif;font-size:1.4rem;margin-bottom:6px}.lb-meta p{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--text-dim)}
 
 /* === ADMIN OVERLAY === */
-.toolbar{position:fixed;right:20px;bottom:20px;z-index:65000;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.toolbar button{padding:12px 16px;border-radius:999px;font-size:.65rem;letter-spacing:1.4px;text-transform:uppercase;border:1px solid rgba(228,217,192,.2);background:var(--panel);color:var(--text-primary);cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:all .25s cubic-bezier(.22,1,.36,1)}
-.toolbar button:hover{background:var(--text-primary);color:var(--bg-deep);border-color:var(--text-primary);transform:translateY(-1px)}
+.toolbar{position:fixed;right:20px;bottom:20px;z-index:65000;display:flex;gap:8px;align-items:flex-end}
+.toolbar button,.file-menu summary{padding:12px 16px;border-radius:999px;font-size:.65rem;letter-spacing:1.4px;text-transform:uppercase;border:1px solid rgba(228,217,192,.2);background:var(--panel);color:var(--text-primary);cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:all .25s cubic-bezier(.22,1,.36,1);list-style:none}
+.toolbar button:hover,.file-menu summary:hover{background:var(--text-primary);color:var(--bg-deep);border-color:var(--text-primary);transform:translateY(-1px)}
 .toolbar .btn-live{border-color:rgba(201,168,76,.4);color:var(--accent)}
+.file-menu{position:relative}
+.file-menu summary::-webkit-details-marker{display:none}
+.file-list{position:absolute;right:0;bottom:52px;display:grid;gap:8px;min-width:170px;padding:10px;background:var(--panel);border:1px solid var(--panel-border);border-radius:14px}
+.file-menu:not([open]) .file-list{display:none}
 
 /* FIXED: Inline buttons on film strip — always visible with dark bg + light text */
 .inline-btn{display:none;position:absolute;z-index:2000;padding:7px 12px;border-radius:999px;font-size:.62rem;letter-spacing:1.4px;text-transform:uppercase;border:1px solid rgba(228,217,192,.3);background:rgba(5,7,16,.85);color:#e4d9c0;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:all .25s cubic-bezier(.22,1,.36,1)}
@@ -158,6 +162,9 @@ button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block
 
 .tip{position:fixed;left:20px;bottom:20px;z-index:65000;padding:10px 14px;border-radius:12px;max-width:340px;background:var(--panel);border:1px solid var(--panel-border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:.72rem;color:rgba(228,217,192,.65)}
 .tip strong{color:var(--accent)}
+.bio-content h1,.section-title,.reel-title{overflow-wrap:anywhere}
+[data-lang="ar"] .bio-content h1{line-height:1.02;font-size:clamp(2.8rem,7vw,5.5rem)}
+[data-lang="ar"] .section-title{font-size:clamp(2.2rem,5vw,4rem)}
 
 /* Modal */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:70000;display:none;align-items:center;justify-content:center;padding:20px}
@@ -177,7 +184,7 @@ button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block
 
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:1000px){.hero-grid,.footer-section{grid-template-columns:1fr}.footer-section::before{display:none}.nav-links{display:none}.hero{padding-top:100px}.viewfinder-wrapper{transform:rotate(0);order:-1}.bio-content h1{font-size:clamp(3rem,12vw,5rem)}.film-strip{transform:rotate(0)}.toolbar{right:10px;bottom:10px}.tip{left:10px;bottom:10px;max-width:280px}}
-@media(max-width:600px){.cta-row{flex-direction:column}.cta-btn,.ghost-btn{width:100%;text-align:center}.modal .row2{grid-template-columns:1fr}.toolbar{flex-direction:column;align-items:flex-end}}
+@media(max-width:600px){.cta-row{flex-direction:column}.cta-btn,.ghost-btn{width:100%;text-align:center}.modal .row2{grid-template-columns:1fr}.toolbar{right:8px;left:8px;bottom:8px;justify-content:space-between}.tip{display:none}.file-list{left:0;right:auto;bottom:52px}}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-deep)}::-webkit-scrollbar-thumb{background:var(--text-ghost);border-radius:3px}
 </style>
 </head>
@@ -192,7 +199,7 @@ button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block
     <div class="brand-mark editable" id="brandMark" data-path="brand.mark">TB VISUALS</div>
   </div>
   <div class="nav-right">
-    <div class="nav-links"><a href="#work">Portfolio</a><a href="#credentials">Credentials</a><a href="#contact">Contact</a></div>
+    <div class="nav-links"><a href="#work" data-en="Portfolio" data-ar="المعرض">Portfolio</a><a href="#credentials" data-en="Credentials" data-ar="الاعتمادات">Credentials</a><a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a></div>
     <button class="nav-toggle lang-toggle" id="langToggle" aria-label="Toggle language">EN</button>
     <button class="nav-toggle" id="themeToggle" aria-label="Toggle theme"></button>
   </div>
@@ -205,8 +212,8 @@ button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block
     <p class="hero-summary editable" id="heroSummary" data-path="hero.summary"></p>
     <div class="hero-subtitle editable" id="heroSubtitle" data-path="hero.subtitle"></div>
     <div class="cta-row">
-      <button class="cta-btn" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">Access Portfolio ↓</button>
-      <button class="ghost-btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book Now</button>
+      <button class="cta-btn" id="ctaPortfolio" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">Access Portfolio ↓</button>
+      <button class="ghost-btn" id="ctaBook" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book Now</button>
     </div>
   </div>
   <div class="viewfinder-wrapper media-editable">
@@ -240,10 +247,16 @@ button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block
 
 <div class="toolbar">
   <button type="button" onclick="toggleEditMode()" id="editToggleBtn">Edit: Off</button>
-  <button type="button" onclick="saveData()">Save</button>
-  <button type="button" onclick="exportJSON()">Export JSON</button><button type="button" onclick="showPublishGuide()">Publish Guide</button>
-  <button type="button" onclick="document.getElementById('importJsonInput').click()">Import</button>
-  <button type="button" onclick="resetData()">Reset</button>
+  <details class="file-menu">
+    <summary>File</summary>
+    <div class="file-list">
+      <button type="button" onclick="saveData()">Save</button>
+      <button type="button" onclick="exportJSON()">Export JSON</button>
+      <button type="button" onclick="document.getElementById('importJsonInput').click()">Import JSON</button>
+      <button type="button" onclick="showPublishGuide()">Publish Guide</button>
+      <button type="button" onclick="resetData()">Reset</button>
+    </div>
+  </details>
   <button type="button" class="btn-live" onclick="window.open('./index.html','_blank')">↗ Live</button>
   <input id="importJsonInput" class="hidden-input" type="file" accept="application/json" onchange="importJSON(event)">
 </div>
@@ -264,8 +277,9 @@ function tSet(obj,val){if(!obj||typeof obj!=='object')return {[lang]:val,en:lang
 function pathGet(p){let c=data;for(const k of p.split('.'))c=c?.[k];return c}
 function pathSet(p,v){const k=p.split('.');let c=data;for(let i=0;i<k.length-1;i++)c=c[k[i]];c[k.at(-1)]=v}
 function fileToDataUrl(file,cb){if(!file)return;const r=new FileReader();r.onload=()=>cb(r.result,file);r.readAsDataURL(file)}
+function fileToDataUrlPromise(file){return new Promise(resolve=>fileToDataUrl(file,(url,f)=>resolve({url,file:f})))}
 
-const defaultData={brand:{mark:'TB VISUALS',logo:'1000160206.jpg'},hero:{name:'TURKI',role:{en:'DIRECTOR OF PHOTOGRAPHY',ar:'مدير التصوير'},summary:{en:'Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.',ar:'التقاط الواقع الخام وتحويله إلى فن سينمائي. متخصص في التصوير الاحترافي والفيديو الحركي.'},subtitle:{en:'Commercials / Editorial / Motion / Creative Direction',ar:'إعلانات / تحرير / حركة / إخراج إبداعي'},mediaType:'image',mediaUrl:'https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80',specs:['SONY α7S III','24-70mm G-MASTER','S-LOG3','120FPS']},portfolio:{title:{en:'THE REEL',ar:'الأعمال'},description:{en:'Selected motion and still work',ar:'أعمال مختارة من الصور والفيديو'}},cta:{portfolio:{en:'Access Portfolio ↓',ar:'عرض الأعمال ↓'},book:{en:'Book Now',ar:'احجز الآن'}},reels:[{id:cryptoRandom(),title:{en:'Editorial Motion',ar:'أعمال تحريرية'},description:{en:'A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.',ar:'مجموعة منتقاة من الإخراج البصري والبورتريه والسرد القصصي.'},items:[{id:cryptoRandom(),type:'image',title:{en:'Shot 1',ar:'لقطة ١'},description:{en:'Editorial portrait framing',ar:'تأطير بورتريه تحريري'},src:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80'},{id:cryptoRandom(),type:'video',title:{en:'Shot 2',ar:'لقطة ٢'},description:{en:'Raw video showcase',ar:'عرض فيديو خام'},src:'https://www.w3schools.com/html/mov_bbb.mp4',thumb:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80'},{id:cryptoRandom(),type:'image',title:{en:'Shot 3',ar:'لقطة ٣'},description:{en:'Documentary texture',ar:'ملمس وثائقي'},src:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=700&q=80'},{id:cryptoRandom(),type:'image',title:{en:'Shot 4',ar:'لقطة ٤'},description:{en:'Commercial still frame',ar:'إطار إعلاني ثابت'},src:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=700&q=80'}]}],credentialsTitle:{en:'Credentials',ar:'الشهادات'},credentials:[{id:cryptoRandom(),title:{en:'Sony Alpha Cinema Master',ar:'سوني ألفا سينما ماستر'},year:'2023',image:''},{id:cryptoRandom(),title:{en:'Adobe Certified Professional',ar:'أدوبي محترف معتمد'},year:'2022',image:''},{id:cryptoRandom(),title:{en:'Advanced Drone Pilot (Part 107)',ar:'طيار درون متقدم (الجزء 107)'},year:'2021',image:''}],contactTitle:{en:'Direct Line',ar:'تواصل مباشر'},contacts:[{id:cryptoRandom(),label:{en:'Instagram',ar:'انستقرام'},value:'@turki_visuals',href:'#'},{id:cryptoRandom(),label:{en:'WhatsApp',ar:'واتساب'},value:'+966 5X XXX XXXX',href:'#'},{id:cryptoRandom(),label:{en:'Email',ar:'بريد إلكتروني'},value:'booking@turki.com',href:'mailto:booking@turki.com'}]};
+const defaultData={brand:{mark:'TB VISUALS',logo:'1000160206.jpg'},hero:{name:'TURKI',role:{en:'DIRECTOR OF PHOTOGRAPHY',ar:'مدير التصوير السينمائي'},summary:{en:'Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.',ar:'أحوّل المشاهد الواقعية إلى لغة بصرية سينمائية، مع تركيز على التصوير التحريري الراقي والفيديو الحركي.'},subtitle:{en:'Commercials / Editorial / Motion / Creative Direction',ar:'إعلانات / تصوير تحريري / فيديو حركي / إخراج إبداعي'},mediaType:'image',mediaUrl:'https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80',specs:['SONY α7S III','24-70mm G-MASTER','S-LOG3','120FPS']},portfolio:{title:{en:'THE REEL',ar:'المعرض'},description:{en:'Selected motion and still work',ar:'مختارات من أعمال الصورة والفيديو'}},cta:{portfolio:{en:'Access Portfolio ↓',ar:'تصفح المعرض ↓'},book:{en:'Book Now',ar:'احجز الآن'}},reels:[{id:cryptoRandom(),title:{en:'Editorial Motion',ar:'سرد بصري تحريري'},description:{en:'A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.',ar:'شريط مختار يجمع الإخراج البصري والبورتريه وبناء المزاج والسرد الإعلاني.'},items:[{id:cryptoRandom(),type:'image',title:{en:'Shot 1',ar:'لقطة أولى'},description:{en:'Editorial portrait framing',ar:'تكوين بورتريه تحريري'},src:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80'},{id:cryptoRandom(),type:'video',title:{en:'Shot 2',ar:'لقطة ثانية'},description:{en:'Raw video showcase',ar:'عرض فيديو خام'},src:'https://www.w3schools.com/html/mov_bbb.mp4',thumb:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80'},{id:cryptoRandom(),type:'image',title:{en:'Shot 3',ar:'لقطة ثالثة'},description:{en:'Documentary texture',ar:'ملمس وثائقي'},src:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=700&q=80'},{id:cryptoRandom(),type:'image',title:{en:'Shot 4',ar:'لقطة رابعة'},description:{en:'Commercial still frame',ar:'إطار إعلاني ثابت'},src:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=700&q=80'}]}],credentialsTitle:{en:'Credentials',ar:'الاعتمادات'},credentials:[{id:cryptoRandom(),title:{en:'Sony Alpha Cinema Master',ar:'اعتماد سوني ألفا للسينما'},year:'2023',image:''},{id:cryptoRandom(),title:{en:'Adobe Certified Professional',ar:'محترف أدوبي المعتمد'},year:'2022',image:''},{id:cryptoRandom(),title:{en:'Advanced Drone Pilot (Part 107)',ar:'طيار طائرات مسيّرة متقدم (107)'},year:'2021',image:''}],contactTitle:{en:'Direct Line',ar:'تواصل مباشر'},contacts:[{id:cryptoRandom(),label:{en:'Instagram',ar:'إنستغرام'},value:'@turki_visuals',href:'#'},{id:cryptoRandom(),label:{en:'WhatsApp',ar:'واتساب'},value:'+966 5X XXX XXXX',href:'#'},{id:cryptoRandom(),label:{en:'Email',ar:'بريد إلكتروني'},value:'booking@turki.com',href:'mailto:booking@turki.com'}]};
 
 function toLangObject(v){if(v&&typeof v==='object')return {en:v.en||'',ar:v.ar||''};const str=typeof v==='string'?v:'';return {en:str,ar:str}}
 function normalizeData(raw){const d=clone(defaultData);const src=(raw&&typeof raw==='object')?raw:{};d.brand={...d.brand,...src.brand};d.hero={...d.hero,...src.hero};d.hero.role=toLangObject(src?.hero?.role??d.hero.role);d.hero.summary=toLangObject(src?.hero?.summary??d.hero.summary);d.hero.subtitle=toLangObject(src?.hero?.subtitle??d.hero.subtitle);d.portfolio={...d.portfolio,...src.portfolio};d.portfolio.title=toLangObject(src?.portfolio?.title??d.portfolio.title);d.portfolio.description=toLangObject(src?.portfolio?.description??d.portfolio.description);d.cta={...d.cta,...src.cta};d.cta.portfolio=toLangObject(src?.cta?.portfolio??d.cta.portfolio);d.cta.book=toLangObject(src?.cta?.book??d.cta.book);d.credentialsTitle=toLangObject(src?.credentialsTitle??d.credentialsTitle);d.contactTitle=toLangObject(src?.contactTitle??d.contactTitle);d.reels=Array.isArray(src.reels)?src.reels:d.reels;d.credentials=Array.isArray(src.credentials)?src.credentials:d.credentials;d.contacts=Array.isArray(src.contacts)?src.contacts:d.contacts;return d}
@@ -284,7 +298,7 @@ function toggleTheme(){const c=document.documentElement.getAttribute('data-theme
 document.getElementById('themeToggle').addEventListener('click',toggleTheme);initTheme();
 
 /* Language */
-function applyLang(){document.documentElement.setAttribute('data-lang',lang);document.documentElement.setAttribute('dir',lang==='ar'?'rtl':'ltr');document.documentElement.setAttribute('lang',lang);document.getElementById('langToggle').textContent=lang==='en'?'AR':'EN';render()}
+function applyLang(){document.documentElement.setAttribute('data-lang',lang);document.documentElement.setAttribute('dir',lang==='ar'?'rtl':'ltr');document.documentElement.setAttribute('lang',lang);document.getElementById('langToggle').textContent=lang==='en'?'AR':'EN';document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.getAttribute(`data-${lang}`)||el.getAttribute('data-en')||''});render()}
 function toggleLang(){lang=lang==='en'?'ar':'en';localStorage.setItem(LANG_KEY,lang);applyLang()}
 document.getElementById('langToggle').addEventListener('click',toggleLang);
 
@@ -303,6 +317,8 @@ function render(){
   document.getElementById('heroName').textContent=data.hero.name;document.getElementById('heroRole').textContent=t(data.hero.role);
   document.getElementById('heroSummary').textContent=t(data.hero.summary);document.getElementById('heroSubtitle').textContent=t(data.hero.subtitle);
   document.getElementById('heroSpecs').innerHTML=(Array.isArray(data.hero.specs)?data.hero.specs:[]).map(s=>`<span>${escapeHtml(s)}</span>`).join('');
+  document.getElementById('ctaPortfolio').textContent=t(data.cta?.portfolio)||'Access Portfolio ↓';
+  document.getElementById('ctaBook').textContent=t(data.cta?.book)||'Book Now';
   document.getElementById('portfolioTitle').textContent=t(data.portfolio.title);document.getElementById('portfolioDesc').textContent=t(data.portfolio.description);
   document.getElementById('credentialsTitle').textContent=t(data.credentialsTitle);document.getElementById('contactTitle').textContent=t(data.contactTitle);
   renderHeroMedia();
@@ -330,7 +346,7 @@ function closeLightbox(e){if(e&&e.target!==e.currentTarget&&!e.target.classList.
 function updateTimecode(){const el=document.getElementById('timecode');if(!el)return;const n=new Date();el.textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':')+':'+String(Math.floor(Math.random()*24)).padStart(2,'0')}
 
 /* CRUD */
-function addReel(){data.reels.push({id:cryptoRandom(),title:{en:'New Reel',ar:'ريل جديد'},description:{en:'Description',ar:'الوصف'},items:[]});saveData();render()}
+function addReel(){data.reels.push({id:cryptoRandom(),title:{en:'New Reel',ar:'معرض جديد'},description:{en:'Description',ar:'أضف وصفًا مختصرًا هنا'},items:[]});saveData();render()}
 function removeReel(id){if(!confirm('Delete?'))return;data.reels=data.reels.filter(r=>r.id!==id);saveData();render()}
 function removeMediaItem(rid,iid){const r=data.reels.find(r=>r.id===rid);if(r){r.items=r.items.filter(i=>i.id!==iid);saveData();render()}}
 function addCredential(){data.credentials.push({id:cryptoRandom(),title:{en:'New Certificate',ar:'شهادة جديدة'},year:'2026',image:''});saveData();render()}
@@ -349,10 +365,12 @@ function openCredModal(idx){const c=data.credentials[idx];openModal(`<h3>Edit Cr
 function saveCredModal(idx){const c=data.credentials[idx];c.title={en:document.getElementById('mCT_en').value.trim()||c.title.en,ar:document.getElementById('mCT_ar').value.trim()||c.title.ar};c.year=document.getElementById('mCY').value.trim()||c.year;const f=document.getElementById('mCIFile').files[0];if(f){fileToDataUrl(f,url=>{c.image=url;saveData();render();closeModal()})}else{c.image=document.getElementById('mCI').value.trim()||c.image;saveData();render();closeModal()}}
 
 function openMediaModal(mode,reelId='',itemId=''){let title='Change Media';let cur={type:'image',src:'',thumb:'',title:{en:'',ar:''},description:{en:'',ar:''}};if(mode==='brandLogo'){title='Change Logo';cur.src=data.brand.logo}else if(mode==='heroMedia'){title='Hero Media';cur.type=data.hero.mediaType;cur.src=data.hero.mediaUrl}else if(mode==='reelItem'){title='Edit Item';const r=data.reels.find(r=>r.id===reelId);const i=r?.items.find(i=>i.id===itemId);if(i)cur=structuredClone(i)}else if(mode==='reelAdd'){title='Add File'}
-openModal(`<h3>${title}</h3>${mode==='brandLogo'?'':`<div class="row2"><div class="field"><label>Type</label><select id="mediaType"><option value="image"${cur.type==='image'?' selected':''}>Image</option><option value="video"${cur.type==='video'?' selected':''}>Video</option></select></div><div class="field"><label>Title (EN)</label><input id="mT_en" value="${escapeAttr(cur.title?.en||'')}"></div></div><div class="field"><label>Title (AR)</label><input id="mT_ar" value="${escapeAttr(cur.title?.ar||'')}" dir="rtl"></div><div class="row2"><div class="field"><label>Desc (EN)</label><textarea id="mD_en">${escapeHtml(cur.description?.en||'')}</textarea></div><div class="field"><label>Desc (AR)</label><textarea id="mD_ar" dir="rtl">${escapeHtml(cur.description?.ar||'')}</textarea></div></div>`}<div class="field"><label>${mode==='brandLogo'?'Logo URL':'Source URL'}</label><input id="mediaSrc" value="${escapeAttr(cur.src||'')}" placeholder="https://..."></div>${mode==='brandLogo'?'':`<div class="field"><label>Thumbnail URL</label><input id="mediaThumb" value="${escapeAttr(cur.thumb||'')}"></div>`}<div class="row2"><div class="field"><label>Upload file</label><input id="mediaFile" type="file" accept="image/*,video/*"></div>${mode==='brandLogo'||mode==='heroMedia'?'':`<div class="field"><label>Upload thumb</label><input id="thumbFile" type="file" accept="image/*"></div>`}</div>${mode==='heroMedia'?`<div class="field"><label>Specs (comma)</label><textarea id="heroSpecsInput">${escapeHtml(data.hero.specs.join(', '))}</textarea></div>`:''}<div class="actions"><button onclick="saveMediaModal('${mode}','${reelId}','${itemId}')">Save</button><button onclick="closeModal()">Close</button></div>`)}
+openModal(`<h3>${title}</h3>${mode==='brandLogo'?'':`<div class="row2"><div class="field"><label>Type</label><select id="mediaType"><option value="image"${cur.type==='image'?' selected':''}>Image</option><option value="video"${cur.type==='video'?' selected':''}>Video</option></select></div><div class="field"><label>Title (EN)</label><input id="mT_en" value="${escapeAttr(cur.title?.en||'')}"></div></div><div class="field"><label>Title (AR)</label><input id="mT_ar" value="${escapeAttr(cur.title?.ar||'')}" dir="rtl"></div><div class="row2"><div class="field"><label>Desc (EN)</label><textarea id="mD_en">${escapeHtml(cur.description?.en||'')}</textarea></div><div class="field"><label>Desc (AR)</label><textarea id="mD_ar" dir="rtl">${escapeHtml(cur.description?.ar||'')}</textarea></div></div>`}<div class="field"><label>${mode==='brandLogo'?'Logo URL':'Source URL'}</label><input id="mediaSrc" value="${escapeAttr(cur.src||'')}" placeholder="https://..."></div>${mode==='brandLogo'?'':`<div class="field"><label>Thumbnail URL</label><input id="mediaThumb" value="${escapeAttr(cur.thumb||'')}"></div>`}<div class="row2"><div class="field"><label>Upload file${mode==='reelAdd'?'s (multi)':''}</label><input id="mediaFile" type="file" accept="image/*,video/*" ${mode==='reelAdd'?'multiple':''}></div>${mode==='brandLogo'||mode==='heroMedia'?'':`<div class="field"><label>Upload thumb</label><input id="thumbFile" type="file" accept="image/*"></div>`}</div>${mode==='heroMedia'?`<div class="field"><label>Specs (comma)</label><textarea id="heroSpecsInput">${escapeHtml(data.hero.specs.join(', '))}</textarea></div>`:''}<div class="actions"><button onclick="saveMediaModal('${mode}','${reelId}','${itemId}')">Save</button><button onclick="closeModal()">Close</button></div>`)}
 
-function saveMediaModal(mode,reelId='',itemId=''){
-  const mainFile=document.getElementById('mediaFile')?.files?.[0],thumbFile=document.getElementById('thumbFile')?.files?.[0];
+async function saveMediaModal(mode,reelId='',itemId=''){
+  const fileInput=document.getElementById('mediaFile');
+  const mainFiles=Array.from(fileInput?.files||[]);
+  const mainFile=mainFiles[0],thumbFile=document.getElementById('thumbFile')?.files?.[0];
   const type=document.getElementById('mediaType')?.value||'image',srcVal=document.getElementById('mediaSrc')?.value.trim()||'',thumbVal=document.getElementById('mediaThumb')?.value.trim()||'';
   const titleObj={en:document.getElementById('mT_en')?.value.trim()||'Untitled',ar:document.getElementById('mT_ar')?.value.trim()||''};
   const descObj={en:document.getElementById('mD_en')?.value.trim()||'',ar:document.getElementById('mD_ar')?.value.trim()||''};
@@ -362,6 +380,17 @@ function saveMediaModal(mode,reelId='',itemId=''){
     else if(mode==='reelItem'){const item=data.reels.find(r=>r.id===reelId)?.items.find(i=>i.id===itemId);if(item){item.type=typeR||type;item.title=titleObj;item.description=descObj;if(srcR)item.src=srcR;if(thumbR)item.thumb=thumbR;else if(thumbVal)item.thumb=thumbVal}}
     else if(mode==='reelAdd'){const reel=data.reels.find(r=>r.id===reelId);if(reel)reel.items.push({id:cryptoRandom(),type:typeR||type,title:titleObj,description:descObj,src:srcR||srcVal,thumb:thumbR||thumbVal||srcR||srcVal})}
     saveData();render();closeModal()};
+  if(mode==='reelAdd'&&mainFiles.length>1){
+    const reel=data.reels.find(r=>r.id===reelId);
+    if(!reel)return;
+    for(const f of mainFiles){
+      const {url,file}=await fileToDataUrlPromise(f);
+      const ft=file.type.startsWith('video')?'video':'image';
+      const base=file.name.replace(/\.[^.]+$/,'');
+      reel.items.push({id:cryptoRandom(),type:ft,title:{en:base||'Untitled',ar:base||'بدون عنوان'},description:{en:'',ar:''},src:url,thumb:url});
+    }
+    saveData();render();closeModal();return;
+  }
   if(mainFile){fileToDataUrl(mainFile,(u,f)=>{const ft=f.type.startsWith('video')?'video':'image';if(thumbFile){fileToDataUrl(thumbFile,tu=>finish(u,tu,ft))}else finish(u,'',ft)})}else if(thumbFile){fileToDataUrl(thumbFile,tu=>finish(srcVal,tu,type))}else finish(srcVal,thumbVal,type)}
 
 /* Events */
