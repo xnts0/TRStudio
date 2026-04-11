@@ -70,6 +70,9 @@
 [data-lang="ar"] .role-badge::after{content:'';width:48px;height:1px;background:linear-gradient(270deg,transparent,var(--accent))}
 [data-lang="ar"] .nav-links a::after{transform-origin:left}
 [data-lang="ar"] .nav-links a:hover::after{transform-origin:right}
+[data-lang="ar"] .bio-content h1{line-height:1.02;font-size:clamp(2.8rem,7vw,6rem)}
+[data-lang="ar"] .section-title{font-size:clamp(2.2rem,5vw,4rem)}
+[data-lang="ar"] .hero-summary{font-size:1.2rem}
 
 /* ── Reset ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -149,6 +152,7 @@ img,video{max-width:100%;display:block}
 .reel-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:28px;flex-wrap:wrap}
 .reel-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:700}
 .reel-desc{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:var(--text-dim);max-width:740px}
+.bio-content h1,.section-title,.reel-title{overflow-wrap:anywhere}
 
 /* Film Strip */
 .film-strip{background:var(--film-bg);padding:48px 0 66px;position:relative;transform:rotate(.8deg);box-shadow:var(--film-strip-shadow);overflow:hidden;transition:background .5s}
@@ -221,8 +225,8 @@ img,video{max-width:100%;display:block}
   </div>
   <div class="nav-right">
     <div class="nav-links">
-      <a href="#work" data-en="Portfolio" data-ar="الأعمال">Portfolio</a>
-      <a href="#credentials" data-en="Credentials" data-ar="الشهادات">Credentials</a>
+      <a href="#work" data-en="Portfolio" data-ar="المعرض">Portfolio</a>
+      <a href="#credentials" data-en="Credentials" data-ar="الاعتمادات">Credentials</a>
       <a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a>
     </div>
     <button class="nav-toggle lang-toggle" id="langToggle" aria-label="Toggle language">EN</button>
@@ -282,6 +286,7 @@ img,video{max-width:100%;display:block}
 const STORAGE_KEY='turkiPortfolioDataV4';
 const THEME_KEY='turkiPortfolioTheme';
 const LANG_KEY='turkiPortfolioLang';
+const CONTENT_URL='./content.json';
 
 function cryptoRandom(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
 
@@ -289,46 +294,58 @@ const defaultData={
   brand:{mark:'TB VISUALS',logo:'1000160206.jpg'},
   hero:{
     name:'TURKI',
-    role:{en:'DIRECTOR OF PHOTOGRAPHY',ar:'مدير التصوير'},
-    summary:{en:'Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.',ar:'التقاط الواقع الخام وتحويله إلى فن سينمائي. متخصص في التصوير الاحترافي والفيديو الحركي.'},
-    subtitle:{en:'Commercials / Editorial / Motion / Creative Direction',ar:'إعلانات / تحرير / حركة / إخراج إبداعي'},
+    role:{en:'DIRECTOR OF PHOTOGRAPHY',ar:'مدير التصوير السينمائي'},
+    summary:{en:'Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.',ar:'أحوّل المشاهد الواقعية إلى لغة بصرية سينمائية، مع تركيز على التصوير التحريري الراقي والفيديو الحركي.'},
+    subtitle:{en:'Commercials / Editorial / Motion / Creative Direction',ar:'إعلانات / تصوير تحريري / فيديو حركي / إخراج إبداعي'},
     mediaType:'image',
     mediaUrl:'https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80',
     specs:['SONY α7S III','24-70mm G-MASTER','S-LOG3','120FPS']
   },
-  portfolio:{title:{en:'THE REEL',ar:'الأعمال'},description:{en:'Selected motion and still work',ar:'أعمال مختارة من الصور والفيديو'}},
-  cta:{portfolio:{en:'Access Portfolio ↓',ar:'عرض الأعمال ↓'},book:{en:'Book Now',ar:'احجز الآن'}},
+  portfolio:{title:{en:'THE REEL',ar:'المعرض'},description:{en:'Selected motion and still work',ar:'مختارات من أعمال الصورة والفيديو'}},
+  cta:{portfolio:{en:'Access Portfolio ↓',ar:'تصفح المعرض ↓'},book:{en:'Book Now',ar:'احجز الآن'}},
   reels:[{
-    id:cryptoRandom(),title:{en:'Editorial Motion',ar:'أعمال تحريرية'},
-    description:{en:'A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.',ar:'مجموعة منتقاة من الإخراج البصري والبورتريه والسرد القصصي.'},
+    id:cryptoRandom(),title:{en:'Editorial Motion',ar:'سرد بصري تحريري'},
+    description:{en:'A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.',ar:'شريط مختار يجمع الإخراج البصري والبورتريه وبناء المزاج والسرد الإعلاني.'},
     items:[
-      {id:cryptoRandom(),type:'image',title:{en:'Shot 1',ar:'لقطة ١'},description:{en:'Editorial portrait framing',ar:'تأطير بورتريه تحريري'},src:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80'},
-      {id:cryptoRandom(),type:'video',title:{en:'Shot 2',ar:'لقطة ٢'},description:{en:'Raw video showcase',ar:'عرض فيديو خام'},src:'https://www.w3schools.com/html/mov_bbb.mp4',thumb:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80'},
-      {id:cryptoRandom(),type:'image',title:{en:'Shot 3',ar:'لقطة ٣'},description:{en:'Documentary texture',ar:'ملمس وثائقي'},src:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=700&q=80'},
-      {id:cryptoRandom(),type:'image',title:{en:'Shot 4',ar:'لقطة ٤'},description:{en:'Commercial still frame',ar:'إطار إعلاني ثابت'},src:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=700&q=80'}
+      {id:cryptoRandom(),type:'image',title:{en:'Shot 1',ar:'لقطة أولى'},description:{en:'Editorial portrait framing',ar:'تأطير بورتريه تحريري'},src:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80'},
+      {id:cryptoRandom(),type:'video',title:{en:'Shot 2',ar:'لقطة ثانية'},description:{en:'Raw video showcase',ar:'عرض فيديو خام'},src:'https://www.w3schools.com/html/mov_bbb.mp4',thumb:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80'},
+      {id:cryptoRandom(),type:'image',title:{en:'Shot 3',ar:'لقطة ثالثة'},description:{en:'Documentary texture',ar:'ملمس وثائقي'},src:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=700&q=80'},
+      {id:cryptoRandom(),type:'image',title:{en:'Shot 4',ar:'لقطة رابعة'},description:{en:'Commercial still frame',ar:'إطار إعلاني ثابت'},src:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=700&q=80'}
     ]
   }],
-  credentialsTitle:{en:'Credentials',ar:'الشهادات'},
+  credentialsTitle:{en:'Credentials',ar:'الاعتمادات'},
   credentials:[
-    {id:cryptoRandom(),title:{en:'Sony Alpha Cinema Master',ar:'سوني ألفا سينما ماستر'},year:'2023',image:''},
-    {id:cryptoRandom(),title:{en:'Adobe Certified Professional',ar:'أدوبي محترف معتمد'},year:'2022',image:''},
-    {id:cryptoRandom(),title:{en:'Advanced Drone Pilot (Part 107)',ar:'طيار درون متقدم (الجزء 107)'},year:'2021',image:''}
+    {id:cryptoRandom(),title:{en:'Sony Alpha Cinema Master',ar:'اعتماد سوني ألفا للسينما'},year:'2023',image:''},
+    {id:cryptoRandom(),title:{en:'Adobe Certified Professional',ar:'محترف أدوبي المعتمد'},year:'2022',image:''},
+    {id:cryptoRandom(),title:{en:'Advanced Drone Pilot (Part 107)',ar:'طيار طائرات مسيّرة متقدم (107)'},year:'2021',image:''}
   ],
   contactTitle:{en:'Direct Line',ar:'تواصل مباشر'},
   contacts:[
-    {id:cryptoRandom(),label:{en:'Instagram',ar:'انستقرام'},value:'@turki_visuals',href:'#'},
+    {id:cryptoRandom(),label:{en:'Instagram',ar:'إنستغرام'},value:'@turki_visuals',href:'#'},
     {id:cryptoRandom(),label:{en:'WhatsApp',ar:'واتساب'},value:'+966 5X XXX XXXX',href:'#'},
     {id:cryptoRandom(),label:{en:'Email',ar:'بريد إلكتروني'},value:'booking@turki.com',href:'mailto:booking@turki.com'}
   ]
 };
 
 function clone(o){return JSON.parse(JSON.stringify(o))}
-function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(!r)return clone(defaultData);return JSON.parse(r)}catch{return clone(defaultData)}}
+function toLangObject(v){if(v&&typeof v==='object')return {en:v.en||'',ar:v.ar||''};const str=typeof v==='string'?v:'';return {en:str,ar:str}}
+function normalizeData(raw){const d=clone(defaultData);const src=(raw&&typeof raw==='object')?raw:{};d.brand={...d.brand,...src.brand};d.hero={...d.hero,...src.hero};d.hero.role=toLangObject(src?.hero?.role??d.hero.role);d.hero.summary=toLangObject(src?.hero?.summary??d.hero.summary);d.hero.subtitle=toLangObject(src?.hero?.subtitle??d.hero.subtitle);d.portfolio={...d.portfolio,...src.portfolio};d.portfolio.title=toLangObject(src?.portfolio?.title??d.portfolio.title);d.portfolio.description=toLangObject(src?.portfolio?.description??d.portfolio.description);d.cta={...d.cta,...src.cta};d.cta.portfolio=toLangObject(src?.cta?.portfolio??d.cta.portfolio);d.cta.book=toLangObject(src?.cta?.book??d.cta.book);d.credentialsTitle=toLangObject(src?.credentialsTitle??d.credentialsTitle);d.contactTitle=toLangObject(src?.contactTitle??d.contactTitle);d.reels=Array.isArray(src.reels)?src.reels:d.reels;d.credentials=Array.isArray(src.credentials)?src.credentials:d.credentials;d.contacts=Array.isArray(src.contacts)?src.contacts:d.contacts;return d}
+async function loadData(){
+  try{
+    const r=localStorage.getItem(STORAGE_KEY);
+    if(r)return normalizeData(JSON.parse(r));
+  }catch{}
+  try{
+    const res=await fetch(CONTENT_URL,{cache:'no-store'});
+    if(res.ok){const j=await res.json();const n=normalizeData(j);localStorage.setItem(STORAGE_KEY,JSON.stringify(n));return n;}
+  }catch{}
+  return normalizeData(defaultData);
+}
 function escapeHtml(s=''){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function escapeAttr(s=''){return escapeHtml(s).replace(/'/g,'&#39;')}
-function t(obj){if(!obj)return '';if(typeof obj==='string')return obj;return obj[lang]||obj.en||''}
+function t(obj){if(!obj)return '';if(typeof obj==='string')return obj;const v=obj[lang]||obj.en||obj.ar||'';return typeof v==='string'?v:''}
 
-const data=loadData();
+let data=clone(defaultData);
 let lang=localStorage.getItem(LANG_KEY)||'en';
 
 /* Theme */
@@ -345,7 +362,7 @@ function applyLang(l){
   document.documentElement.setAttribute('dir',l==='ar'?'rtl':'ltr');
   document.documentElement.setAttribute('lang',l);
   document.getElementById('langToggle').textContent=l==='en'?'AR':'EN';
-  document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.getAttribute(`data-${l}`)});
+  document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.getAttribute(`data-${l}`)||el.getAttribute('data-en')||''});
   render();
 }
 document.getElementById('langToggle').addEventListener('click',toggleLang);
@@ -374,7 +391,7 @@ function render(){
   document.getElementById('heroRole').textContent=t(data.hero.role);
   document.getElementById('heroSummary').textContent=t(data.hero.summary);
   document.getElementById('heroSubtitle').textContent=t(data.hero.subtitle);
-  document.getElementById('heroSpecs').innerHTML=data.hero.specs.map(s=>`<span>${escapeHtml(s)}</span>`).join('');
+  document.getElementById('heroSpecs').innerHTML=(Array.isArray(data.hero.specs)?data.hero.specs:[]).map(s=>`<span>${escapeHtml(s)}</span>`).join('');
   document.getElementById('portfolioTitle').textContent=t(data.portfolio.title);
   document.getElementById('portfolioDesc').textContent=t(data.portfolio.description);
   document.getElementById('credentialsTitle').textContent=t(data.credentialsTitle);
@@ -383,19 +400,19 @@ function render(){
   document.getElementById('ctaBook').textContent=t(data.cta?.book)||'Book Now';
   renderHeroMedia();
 
-  document.getElementById('reelsContainer').innerHTML=data.reels.map(reel=>{
+  document.getElementById('reelsContainer').innerHTML=(Array.isArray(data.reels)?data.reels:[]).map(reel=>{
     const rep=reel.items.length>1?[...reel.items,...reel.items]:reel.items;
     const dur=Math.max(16,reel.items.length*6);
     return`<div class="reel-block"><div class="reel-head"><div><div class="reel-title">${escapeHtml(t(reel.title))}</div><div class="reel-desc">${escapeHtml(t(reel.description))}</div></div></div><div class="film-strip"><div class="reel-track" style="animation-duration:${dur}s">${rep.map(i=>renderFrame(reel.id,i)).join('')}</div></div></div>`;
   }).join('');
 
-  document.getElementById('credentialsList').innerHTML=data.credentials.map(c=>`
+  document.getElementById('credentialsList').innerHTML=(Array.isArray(data.credentials)?data.credentials:[]).map(c=>`
     <li>
       <span class="cred-title${c.image?' has-image':''}" ${c.image?`onclick="openCredImage('${escapeAttr(c.image)}','${escapeAttr(t(c.title))}')" style="cursor:pointer"`:''}>${escapeHtml(t(c.title))}</span>
       <span class="cred-year">${escapeHtml(c.year)}</span>
     </li>`).join('');
 
-  document.getElementById('contactLinks').innerHTML=data.contacts.map(c=>`
+  document.getElementById('contactLinks').innerHTML=(Array.isArray(data.contacts)?data.contacts:[]).map(c=>`
     <a href="${escapeAttr(c.href||'#')}" target="_blank" rel="noopener noreferrer">
       <span>${escapeHtml(t(c.label))}</span>
       <span>→ ${escapeHtml(c.value)}</span>
@@ -434,7 +451,7 @@ function updateTimecode(){const el=document.getElementById('timecode');if(!el)re
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox({target:document.getElementById('lightbox'),currentTarget:document.getElementById('lightbox')})});
 window.addEventListener('scroll',()=>{document.getElementById('topBar').classList.toggle('scrolled',window.scrollY>80)},{passive:true});
 setInterval(updateTimecode,1000/24);
-render();
+loadData().then(d=>{data=d;render();});
 </script>
 </body>
 </html>

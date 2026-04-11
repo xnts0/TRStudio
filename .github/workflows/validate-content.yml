@@ -1,0 +1,39 @@
+name: Validate portfolio content
+
+on:
+  push:
+    paths:
+      - 'content.json'
+      - 'index.html'
+      - 'admin.html'
+      - '.github/workflows/validate-content.yml'
+  pull_request:
+    paths:
+      - 'content.json'
+      - 'index.html'
+      - 'admin.html'
+      - '.github/workflows/validate-content.yml'
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate content.json is valid JSON
+        run: |
+          python -m json.tool content.json > /dev/null
+
+      - name: Validate required keys
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('content.json').read_text())
+          required = ['brand','hero','portfolio','cta','reels','credentialsTitle','credentials','contactTitle','contacts']
+          missing = [k for k in required if k not in data]
+          if missing:
+              raise SystemExit(f"Missing keys: {', '.join(missing)}")
+          print('content.json structure looks good.')
+          PY
