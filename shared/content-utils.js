@@ -4,7 +4,6 @@ export const DRAFT_CONTENT_KEY = "portfolioDraftContent";
 export const DRAFT_META_KEY = "portfolioDraftMeta";
 export const THEME_KEY = "turkiPortfolioTheme";
 export const LANG_KEY = "turkiPortfolioLang";
-export const ADMIN_SECRET_KEY = "portfolioAdminSecret";
 export const ADMIN_CONFIG = globalThis.TR_ADMIN_CONFIG || {};
 
 export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/svg+xml"];
@@ -286,7 +285,8 @@ export function createDraftMeta(publishedSha = "") {
     basedOnPublishedSha: publishedSha || "",
     dirty: false,
     version: CONTENT_VERSION,
-    lastPublishedAt: ""
+    lastPublishedAt: "",
+    lastPublishRequestedAt: ""
   };
 }
 
@@ -333,10 +333,4 @@ export function getSiteBasePath(locationLike = globalThis.location) {
   if (!parts.length) return "";
   if (parts.at(-1).includes(".")) parts.pop();
   return parts.length ? `/${parts.join("/")}` : "";
-}
-
-export function resolveApiBase() {
-  if (ADMIN_CONFIG.apiBase) return ADMIN_CONFIG.apiBase.replace(/\/$/, "");
-  const meta = globalThis.document?.querySelector('meta[name="tr-api-base"]')?.content?.trim();
-  return meta ? meta.replace(/\/$/, "") : "";
 }

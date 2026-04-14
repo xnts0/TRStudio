@@ -4,7 +4,7 @@ import {
   DRAFT_META_KEY,
   THEME_KEY,
   LANG_KEY,
-  ADMIN_SECRET_KEY,
+  ADMIN_CONFIG,
   defaultData,
   normalizeContent,
   validateContent,
@@ -16,10 +16,15 @@ import {
   createId,
   fileStem,
   validateUploadFile,
-  resolveApiBase,
   escapeHtml,
-  escapeAttr
+  escapeAttr,
+  slugify,
+  typeFromMime
 } from "../shared/content-utils.js";
+
+const GITHUB_TOKEN_KEY = "portfolioGithubToken";
+const DEFAULT_WORKFLOW_ID = "publish-content.yml";
+const GITHUB_API = "https://api.github.com";
 
 const state = {
   publishedContent: normalizeContent(defaultData),
@@ -30,11 +35,12 @@ const state = {
   recoveredMeta: null,
   lang: localStorage.getItem(LANG_KEY) || "en",
   theme: localStorage.getItem(THEME_KEY) || "dark",
-  adminSecret: sessionStorage.getItem(ADMIN_SECRET_KEY) || "",
+  githubToken: sessionStorage.getItem(GITHUB_TOKEN_KEY) || "",
+  workflowId: ADMIN_CONFIG.workflowId || DEFAULT_WORKFLOW_ID,
+  repo: inferRepoContext(),
   uploadQueues: {},
-  status: { tone: "muted", text: "Loading published content..." },
-  uploadState: {},
-  lastPublishCommit: ""
+  previewUrls: {},
+  status: { tone: "muted", text: "Loading published content..." }
 };
 
 const elements = {
@@ -53,8 +59,8 @@ const elements = {
   chipDraft: document.getElementById("chipDraft"),
   chipUpload: document.getElementById("chipUpload"),
   chipPublish: document.getElementById("chipPublish"),
-  secretInput: document.getElementById("secretInput"),
-  connectBtn: document.getElementById("connectSecret"),
+  githubTokenInput: document.getElementById("githubTokenInput"),
+  connectBtn: document.getElementById("connectGitHub"),
   publishedSha: document.getElementById("publishedSha"),
   saveDraft: document.getElementById("saveDraft"),
   publish: document.getElementById("publishContent"),
@@ -66,12 +72,27 @@ const elements = {
   publishMeta: document.getElementById("publishMeta")
 };
 
-function t(value) {
-  return textFor(value, state.lang);
+function inferRepoContext() {
+  const repo = {
+    owner: ADMIN_CONFIG.repoOwner || "",
+    name: ADMIN_CONFIG.repoName || "",
+    branch: ADMIN_CONFIG.repoBranch || "main"
+  };
+
+  if (!repo.owner || !repo.name) {
+    const host = globalThis.location?.hostname || "";
+    const pathParts = (globalThis.location?.pathname || "/").split("/").filter(Boolean);
+    if (host.endsWith(".github.io")) {
+      if (!repo.owner) repo.owner = host.split(".")[0] || "";
+      if (!repo.name && pathParts.length) repo.name = pathParts[0];
+    }
+  }
+
+  return repo;
 }
 
-function clone(value) {
-  return JSON.parse(JSON.stringify(value));
+function t(value) {
+  return textFor(value, state.lang);
 }
 
 function pathGet(target, path) {
@@ -109,17 +130,6 @@ function markDirty(note = "") {
   saveDraftToStorage();
   renderStatus();
   if (note) setStatus(note, "info");
-}
-
-function apiUrl(path) {
-  const base = resolveApiBase();
-  return `${base}${path}`;
-}
-
-async function apiFetch(path, init = {}) {
-  const headers = new Headers(init.headers || {});
-  if (state.adminSecret) headers.set("x-admin-secret", state.adminSecret);
-  return fetch(apiUrl(path), { ...init, headers });
 }
 
 function setTheme(theme) {
@@ -166,11 +176,17 @@ function pendingUploadCount() {
   return Object.values(state.uploadQueues).reduce((sum, files) => sum + files.length, 0);
 }
 
+function workflowHtmlUrl() {
+  if (!state.repo.owner || !state.repo.name) return "";
+  return `https://github.com/${state.repo.owner}/${state.repo.name}/actions/workflows/${state.workflowId}`;
+}
+
 function renderStatus() {
   const diffCount = countDifferences(state.publishedContent, state.draftContent);
   const draftDirty = state.draftMeta.dirty || diffCount > 0;
   const queuedUploads = pendingUploadCount();
   const publishedAt = state.draftMeta.lastPublishedAt || "Never";
+  const publishRequestedAt = state.draftMeta.lastPublishRequestedAt || "";
 
   elements.chipDraft.textContent = draftDirty
     ? (state.lang === "ar" ? "مسودة" : "Draft")
@@ -178,25 +194,30 @@ function renderStatus() {
   elements.chipDraft.dataset.active = draftDirty ? "true" : "false";
 
   elements.chipUpload.textContent = queuedUploads
-    ? `${state.lang === "ar" ? "قيد الانتظار" : "Queued"} ${queuedUploads}`
-    : (state.lang === "ar" ? "لا توجد ملفات معلقة" : "No pending uploads");
+    ? `${state.lang === "ar" ? "ملفات محضرة" : "Prepared media"} ${queuedUploads}`
+    : (state.lang === "ar" ? "لا توجد ملفات محضرة" : "No prepared media");
   elements.chipUpload.dataset.active = queuedUploads ? "true" : "false";
 
-  elements.chipPublish.textContent = state.lastPublishCommit
-    ? `${state.lang === "ar" ? "منشور" : "Published"} ${state.lastPublishCommit.slice(0, 7)}`
-    : (state.lang === "ar" ? "غير منشور" : "Not published");
-  elements.chipPublish.dataset.active = state.lastPublishCommit ? "true" : "false";
+  elements.chipPublish.textContent = publishRequestedAt && draftDirty
+    ? (state.lang === "ar" ? "النشر قيد الانتظار" : "Publish queued")
+    : state.publishedSha
+      ? (state.lang === "ar" ? "آخر نسخة منشورة" : "Published state")
+      : (state.lang === "ar" ? "غير متصل" : "Not connected");
+  elements.chipPublish.dataset.active = publishRequestedAt ? "true" : "false";
 
   elements.summaryContent.innerHTML = `
     <strong>${state.lang === "ar" ? "ملخص الحالة" : "Status Summary"}</strong>
+    <span>${state.lang === "ar" ? "المستودع:" : "Repository:"} ${escapeHtml(`${state.repo.owner || "?"}/${state.repo.name || "?"}@${state.repo.branch}`)}</span>
     <span>${state.lang === "ar" ? "التغييرات مقارنة بالمنشور:" : "Differences vs published:"} ${diffCount}</span>
     <span>${state.lang === "ar" ? "آخر تحديث للمسودة:" : "Draft updated:"} ${new Date(state.draftMeta.updatedAt).toLocaleString()}</span>
-    <span>${state.lang === "ar" ? "آخر نشر:" : "Last published:"} ${publishedAt === "Never" ? publishedAt : new Date(publishedAt).toLocaleString()}</span>
+    <span>${state.lang === "ar" ? "آخر نشر مكتمل:" : "Last completed publish:"} ${publishedAt === "Never" ? publishedAt : new Date(publishedAt).toLocaleString()}</span>
+    ${publishRequestedAt ? `<span>${state.lang === "ar" ? "آخر طلب نشر:" : "Last publish request:"} ${new Date(publishRequestedAt).toLocaleString()}</span>` : ""}
   `;
 
-  elements.publishMeta.textContent = state.publishedSha
-    ? `content.json @ ${state.publishedSha.slice(0, 7)}`
-    : "content.json sha unavailable";
+  const workflowUrl = workflowHtmlUrl();
+  elements.publishMeta.innerHTML = state.publishedSha
+    ? `content.json @ ${escapeHtml(state.publishedSha.slice(0, 7))}${workflowUrl ? ` · <a href="${workflowUrl}" target="_blank" rel="noopener noreferrer">workflow</a>` : ""}`
+    : (workflowUrl ? `<a href="${workflowUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(state.workflowId)}</a>` : "content.json sha unavailable");
   elements.publishedSha.textContent = state.publishedSha || "Unavailable";
 }
 
@@ -242,25 +263,54 @@ function renderStaticFields() {
   document.getElementById("heroMediaType").value = state.draftContent.hero.mediaType;
 
   elements.brandMark.textContent = state.draftContent.brand.mark;
-  elements.brandLogoPreview.src = state.draftContent.brand.logo;
+  elements.brandLogoPreview.src = state.previewUrls.brandLogo || state.draftContent.brand.logo;
   renderHeroPreview();
 }
 
 function renderHeroPreview() {
+  const src = state.previewUrls.heroMedia || state.draftContent.hero.mediaUrl;
   const media = state.draftContent.hero.mediaType === "video"
-    ? `<video src="${state.draftContent.hero.mediaUrl}" controls muted playsinline></video>`
-    : `<img src="${state.draftContent.hero.mediaUrl}" alt="${state.draftContent.hero.name}">`;
+    ? `<video src="${escapeAttr(src)}" controls muted playsinline></video>`
+    : `<img src="${escapeAttr(src)}" alt="${escapeAttr(state.draftContent.hero.name)}">`;
   elements.heroMediaPreview.innerHTML = media;
+}
+
+function updatePreviewUrl(key, file) {
+  const oldUrl = state.previewUrls[key];
+  if (oldUrl) URL.revokeObjectURL(oldUrl);
+  state.previewUrls[key] = file ? URL.createObjectURL(file) : "";
+}
+
+function suggestedAssetPath(folder, filename, reelId = "") {
+  const cleanName = slugify(filename);
+  if (folder === "reels") {
+    return `assets/uploads/reels/${slugify(reelId || "general")}/${cleanName}`;
+  }
+  return `assets/uploads/${slugify(folder)}/${cleanName}`;
+}
+
+function useLocalFileForPath(folder, input, apply) {
+  const file = input?.files?.[0];
+  if (!file) {
+    setStatus("Choose a local file first.", "warning");
+    return;
+  }
+  const issue = validateUploadFile(file);
+  if (issue) {
+    setStatus(issue, "error");
+    return;
+  }
+  apply(file, suggestedAssetPath(folder, file.name));
 }
 
 function reelQueueMarkup(reelId) {
   const queue = state.uploadQueues[reelId] || [];
   if (!queue.length) {
-    return `<p class="hint">${state.lang === "ar" ? "لا توجد ملفات في طابور الرفع." : "No queued files."}</p>`;
+    return `<p class="hint">${state.lang === "ar" ? "لا توجد ملفات محضرة بعد." : "No prepared local files yet."}</p>`;
   }
   return `
     <ul class="queue-list">
-      ${queue.map((file, index) => `<li>${file.name}<button type="button" data-action="remove-queued-file" data-reel-id="${reelId}" data-index="${index}">Remove</button></li>`).join("")}
+      ${queue.map((file, index) => `<li>${escapeHtml(file.name)}<button type="button" data-action="remove-queued-file" data-reel-id="${escapeAttr(reelId)}" data-index="${index}">Remove</button></li>`).join("")}
     </ul>
   `;
 }
@@ -304,12 +354,12 @@ function renderReels() {
 
       <div class="upload-panel">
         <div>
-          <strong>${state.lang === "ar" ? "رفع متعدد لهذا المعرض" : "Multi-file upload for this reel"}</strong>
-          <p>${state.lang === "ar" ? "اختر صورًا أو فيديوهات ثم ارفعها إلى GitHub." : "Select images or videos, then upload them to GitHub."}</p>
+          <strong>${state.lang === "ar" ? "تحضير ملفات محلية لهذا المعرض" : "Prepare local files for this reel"}</strong>
+          <p>${state.lang === "ar" ? "اختر ملفات محلية ليتم إنشاء مساراتها داخل assets/uploads/reels/... ثم ارفع الملفات فعليًا إلى المستودع عبر Git أو واجهة GitHub." : "Select local files to generate repo-relative paths under assets/uploads/reels/..., then upload the actual files to the repo with Git or the GitHub web UI."}</p>
         </div>
-        <input type="file" multiple data-action="queue-files" data-reel-id="${reel.id}" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime">
+        <input type="file" multiple data-action="queue-files" data-reel-id="${escapeAttr(reel.id)}" accept="image/jpeg,image/png,image/webp,image/svg+xml,video/mp4,video/webm,video/quicktime">
         ${reelQueueMarkup(reel.id)}
-        <button type="button" data-action="upload-queue" data-reel-id="${reel.id}">${state.lang === "ar" ? "رفع الملفات المعلقة" : "Upload queued files"}</button>
+        <button type="button" data-action="add-queued-files" data-reel-id="${escapeAttr(reel.id)}">${state.lang === "ar" ? "إضافة المسارات إلى المسودة" : "Add queued paths to draft"}</button>
       </div>
 
       <div class="item-list">
@@ -364,10 +414,10 @@ function renderReelItem(reel, reelIndex, item, itemIndex) {
         </label>
       </div>
       <div class="upload-inline">
-        <label><span>${state.lang === "ar" ? "ملف المصدر" : "Source file"}</span><input type="file" data-item-source="${reel.id}:${item.id}" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime"></label>
-        <button type="button" data-action="upload-item-source" data-reel-id="${reel.id}" data-item-id="${item.id}">${state.lang === "ar" ? "رفع المصدر" : "Upload source"}</button>
-        <label><span>${state.lang === "ar" ? "صورة مصغرة" : "Thumbnail file"}</span><input type="file" data-item-thumb="${reel.id}:${item.id}" accept="image/jpeg,image/png,image/webp"></label>
-        <button type="button" data-action="upload-item-thumb" data-reel-id="${reel.id}" data-item-id="${item.id}">${state.lang === "ar" ? "رفع المصغرة" : "Upload thumb"}</button>
+        <label><span>${state.lang === "ar" ? "اختر ملف المصدر محليًا" : "Choose local source file"}</span><input type="file" data-item-source="${escapeAttr(reel.id)}:${escapeAttr(item.id)}" accept="image/jpeg,image/png,image/webp,image/svg+xml,video/mp4,video/webm,video/quicktime"></label>
+        <button type="button" data-action="use-item-source" data-reel-id="${escapeAttr(reel.id)}" data-item-id="${escapeAttr(item.id)}">${state.lang === "ar" ? "استخدم مسار المصدر" : "Use source path"}</button>
+        <label><span>${state.lang === "ar" ? "اختر صورة مصغرة محليًا" : "Choose local thumbnail"}</span><input type="file" data-item-thumb="${escapeAttr(reel.id)}:${escapeAttr(item.id)}" accept="image/jpeg,image/png,image/webp,image/svg+xml"></label>
+        <button type="button" data-action="use-item-thumb" data-reel-id="${escapeAttr(reel.id)}" data-item-id="${escapeAttr(item.id)}">${state.lang === "ar" ? "استخدم مسار المصغرة" : "Use thumb path"}</button>
       </div>
     </article>
   `;
@@ -392,8 +442,8 @@ function renderCredentials() {
       </div>
       <div class="upload-inline">
         <label><span>Image URL</span><input data-path="credentials.${index}.image" value="${escapeAttr(item.image)}"></label>
-        <label><span>${state.lang === "ar" ? "ملف الصورة" : "Image file"}</span><input type="file" data-credential-file="${index}" accept="image/jpeg,image/png,image/webp"></label>
-        <button type="button" data-action="upload-credential-image" data-index="${index}">${state.lang === "ar" ? "رفع الصورة" : "Upload image"}</button>
+        <label><span>${state.lang === "ar" ? "اختر ملف الشهادة" : "Choose local image"}</span><input type="file" data-credential-file="${index}" accept="image/jpeg,image/png,image/webp,image/svg+xml"></label>
+        <button type="button" data-action="use-credential-image" data-index="${index}">${state.lang === "ar" ? "استخدم مسار الصورة" : "Use image path"}</button>
       </div>
     </article>
   `).join("");
@@ -424,7 +474,7 @@ function renderContacts() {
 function renderValidation() {
   const issues = validateContent(state.draftContent);
   elements.validationList.innerHTML = issues.length
-    ? issues.map((issue) => `<li>${issue}</li>`).join("")
+    ? issues.map((issue) => `<li>${escapeHtml(issue)}</li>`).join("")
     : `<li>${state.lang === "ar" ? "لا توجد أخطاء تحقق." : "No validation issues."}</li>`;
 }
 
@@ -454,7 +504,7 @@ function updatePathFromInput(node) {
     elements.brandMark.textContent = node.value;
   }
   if (path === "brand.logo") {
-    elements.brandLogoPreview.src = node.value;
+    elements.brandLogoPreview.src = state.previewUrls.brandLogo || node.value;
   }
   if (path === "hero.mediaUrl" || path === "hero.mediaType") {
     renderHeroPreview();
@@ -520,96 +570,58 @@ async function loadPublishedContent() {
   }
 }
 
+async function githubApi(path, init = {}, requireToken = false) {
+  const headers = new Headers(init.headers || {});
+  headers.set("accept", "application/vnd.github+json");
+  headers.set("x-github-api-version", "2022-11-28");
+  if (state.githubToken) {
+    headers.set("authorization", `Bearer ${state.githubToken}`);
+  } else if (requireToken) {
+    throw new Error("Enter a GitHub token first.");
+  }
+
+  return fetch(`${GITHUB_API}${path}`, {
+    ...init,
+    headers
+  });
+}
+
 async function refreshPublishedSha() {
-  if (!state.adminSecret) {
-    setStatus("Enter the admin secret to query the GitHub-backed API.", "warning");
+  if (!state.repo.owner || !state.repo.name) {
+    setStatus("Could not infer the GitHub repository from this Pages URL.", "error");
     return;
   }
   try {
-    const response = await apiFetch("/api/content-state");
+    const response = await githubApi(`/repos/${state.repo.owner}/${state.repo.name}/contents/content.json?ref=${encodeURIComponent(state.repo.branch)}`);
     const payload = await response.json();
-    if (!response.ok || !payload.ok) throw new Error(payload.error || "Unable to fetch metadata.");
+    if (!response.ok) throw new Error(payload.message || "Unable to fetch content.json metadata.");
     state.publishedSha = payload.sha || "";
     state.draftMeta.basedOnPublishedSha = state.publishedSha;
+    if (countDifferences(state.publishedContent, state.draftContent) === 0) {
+      state.draftMeta.dirty = false;
+      if (state.draftMeta.lastPublishRequestedAt) {
+        state.draftMeta.lastPublishedAt = new Date().toISOString();
+        state.draftMeta.lastPublishRequestedAt = "";
+      }
+      saveDraftToStorage();
+    }
     renderStatus();
-    setStatus("Connected to the serverless GitHub proxy.", "success");
+    setStatus("Connected to GitHub repository metadata.", "success");
   } catch (error) {
     console.error(error);
-    setStatus(error.message || "Unable to connect to the serverless API.", "error");
+    setStatus(error.message || "Unable to connect to GitHub.", "error");
   }
 }
 
-function rememberSecret() {
-  state.adminSecret = elements.secretInput.value.trim();
-  sessionStorage.setItem(ADMIN_SECRET_KEY, state.adminSecret);
+function rememberGitHubToken() {
+  state.githubToken = elements.githubTokenInput.value.trim();
+  sessionStorage.setItem(GITHUB_TOKEN_KEY, state.githubToken);
   refreshPublishedSha();
 }
 
 function saveDraft() {
   saveDraftToStorage();
   setStatus("Draft saved locally.", "success");
-}
-
-async function uploadFiles(targetFolder, files, reelId = "") {
-  if (!state.adminSecret) {
-    throw new Error("Enter the admin secret before uploading.");
-  }
-  if (!files.length) {
-    throw new Error("No files selected.");
-  }
-  const formData = new FormData();
-  formData.set("targetFolder", targetFolder);
-  if (reelId) formData.set("reelId", reelId);
-  files.forEach((file) => formData.append("files", file, file.name));
-
-  const response = await apiFetch("/api/upload-media", {
-    method: "POST",
-    body: formData
-  });
-  const payload = await response.json();
-  if (!response.ok || !payload.ok) {
-    throw new Error(payload.error || "Upload failed.");
-  }
-  return payload.files;
-}
-
-async function uploadBrandLogo() {
-  const file = elements.brandLogoFile.files[0];
-  if (!file) return setStatus("Choose a logo file first.", "warning");
-  const issue = validateUploadFile(file);
-  if (issue) return setStatus(issue, "error");
-  try {
-    setStatus(`Uploading ${file.name}...`, "info");
-    const [uploaded] = await uploadFiles("brand", [file]);
-    state.draftContent.brand.logo = uploaded.storedPath;
-    elements.brandLogoPreview.src = uploaded.storedPath;
-    markDirty("Brand logo uploaded. Publish to update the live site.");
-    elements.brandLogoFile.value = "";
-  } catch (error) {
-    console.error(error);
-    setStatus(error.message, "error");
-  }
-}
-
-async function uploadHeroMedia() {
-  const file = elements.heroMediaFile.files[0];
-  if (!file) return setStatus("Choose a hero media file first.", "warning");
-  const issue = validateUploadFile(file);
-  if (issue) return setStatus(issue, "error");
-  try {
-    setStatus(`Uploading ${file.name}...`, "info");
-    const [uploaded] = await uploadFiles("hero", [file]);
-    state.draftContent.hero.mediaUrl = uploaded.storedPath;
-    state.draftContent.hero.mediaType = uploaded.type;
-    document.getElementById("heroMediaUrl").value = uploaded.storedPath;
-    document.getElementById("heroMediaType").value = uploaded.type;
-    renderHeroPreview();
-    markDirty("Hero media uploaded. Publish to make it live.");
-    elements.heroMediaFile.value = "";
-  } catch (error) {
-    console.error(error);
-    setStatus(error.message, "error");
-  }
 }
 
 function queueFilesForReel(reelId, files) {
@@ -627,80 +639,90 @@ function queueFilesForReel(reelId, files) {
   renderStatus();
 }
 
-async function uploadQueuedFiles(reelId) {
+function addQueuedFilesToDraft(reelId) {
   const queue = state.uploadQueues[reelId] || [];
   if (!queue.length) {
-    return setStatus("No queued files to upload.", "warning");
+    setStatus("No queued files to add.", "warning");
+    return;
   }
-  try {
-    setStatus(`Uploading ${queue.length} file(s)...`, "info");
-    const uploaded = await uploadFiles("reels", queue, reelId);
-    const reel = state.draftContent.reels.find((entry) => entry.id === reelId);
-    uploaded.forEach((file) => {
-      const base = fileStem(file.originalName);
-      reel.items.push({
-        id: createId(),
-        type: file.type,
-        title: { en: base, ar: base },
-        description: { en: "", ar: "" },
-        src: file.storedPath,
-        thumb: file.type === "image" ? file.storedPath : file.storedPath
-      });
+  const reel = state.draftContent.reels.find((entry) => entry.id === reelId);
+  if (!reel) {
+    setStatus("Target reel not found.", "error");
+    return;
+  }
+
+  queue.forEach((file) => {
+    const type = typeFromMime(file.type);
+    const src = suggestedAssetPath("reels", file.name, reelId);
+    reel.items.push({
+      id: createId(),
+      type,
+      title: { en: fileStem(file.name), ar: fileStem(file.name) },
+      description: { en: "", ar: "" },
+      src,
+      thumb: type === "image" ? src : src
     });
-    state.uploadQueues[reelId] = [];
-    markDirty("Uploaded files were added to the reel draft.");
-    renderReels();
-    renderValidation();
-  } catch (error) {
-    console.error(error);
-    setStatus(error.message, "error");
-  }
+  });
+
+  state.uploadQueues[reelId] = [];
+  markDirty("Prepared repo-relative media paths for the reel. Upload the matching files to the repo before publishing.");
+  renderReels();
+  renderValidation();
 }
 
-async function uploadCredentialImage(index) {
+function useBrandLogoPath() {
+  useLocalFileForPath("brand", elements.brandLogoFile, (file, path) => {
+    state.draftContent.brand.logo = path;
+    fillInput("brandLogoInput", path);
+    updatePreviewUrl("brandLogo", file);
+    elements.brandLogoPreview.src = state.previewUrls.brandLogo;
+    markDirty("Brand logo path prepared. Upload the same file to the repository.");
+  });
+}
+
+function useHeroMediaPath() {
+  useLocalFileForPath("hero", elements.heroMediaFile, (file, path) => {
+    state.draftContent.hero.mediaUrl = path;
+    state.draftContent.hero.mediaType = typeFromMime(file.type);
+    fillInput("heroMediaUrl", path);
+    document.getElementById("heroMediaType").value = state.draftContent.hero.mediaType;
+    updatePreviewUrl("heroMedia", file);
+    renderHeroPreview();
+    markDirty("Hero media path prepared. Upload the same file to the repository.");
+  });
+}
+
+function useCredentialImagePath(index) {
   const input = document.querySelector(`[data-credential-file="${index}"]`);
-  const file = input?.files?.[0];
-  if (!file) return setStatus("Choose a credential image first.", "warning");
-  const issue = validateUploadFile(file);
-  if (issue) return setStatus(issue, "error");
-  try {
-    const [uploaded] = await uploadFiles("credentials", [file]);
-    state.draftContent.credentials[index].image = uploaded.storedPath;
-    markDirty("Credential image uploaded.");
+  useLocalFileForPath("credentials", input, (_, path) => {
+    state.draftContent.credentials[index].image = path;
+    markDirty("Credential image path prepared.");
     renderCredentials();
-  } catch (error) {
-    console.error(error);
-    setStatus(error.message, "error");
-  }
+    renderValidation();
+  });
 }
 
-async function uploadReelItemAsset(reelId, itemId, kind) {
+function useReelItemAssetPath(reelId, itemId, kind) {
   const selector = kind === "thumb" ? `[data-item-thumb="${reelId}:${itemId}"]` : `[data-item-source="${reelId}:${itemId}"]`;
   const input = document.querySelector(selector);
-  const file = input?.files?.[0];
-  if (!file) return setStatus("Choose a file first.", "warning");
-  const issue = validateUploadFile(file);
-  if (issue) return setStatus(issue, "error");
-
-  try {
-    const [uploaded] = await uploadFiles("reels", [file], reelId);
+  useLocalFileForPath("reels", input, (file, path) => {
     const reel = state.draftContent.reels.find((entry) => entry.id === reelId);
     const item = reel?.items.find((entry) => entry.id === itemId);
-    if (!item) throw new Error("Target reel item not found.");
-
-    if (kind === "thumb") {
-      item.thumb = uploaded.storedPath;
-    } else {
-      item.src = uploaded.storedPath;
-      item.type = uploaded.type;
-      if (!item.thumb) item.thumb = uploaded.storedPath;
+    if (!item) {
+      setStatus("Target reel item not found.", "error");
+      return;
     }
-    markDirty("Reel item media uploaded.");
+    if (kind === "thumb") {
+      item.thumb = path;
+    } else {
+      item.src = path;
+      item.type = typeFromMime(file.type);
+      if (!item.thumb) item.thumb = path;
+    }
+    markDirty("Reel item media path prepared.");
     renderReels();
-  } catch (error) {
-    console.error(error);
-    setStatus(error.message, "error");
-  }
+    renderValidation();
+  });
 }
 
 function syncStaticTransforms() {
@@ -710,46 +732,65 @@ function syncStaticTransforms() {
     .filter(Boolean);
 }
 
+function encodeUtf8Base64(value) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+  return btoa(binary);
+}
+
 async function publishContent() {
   syncStaticTransforms();
   const issues = validateContent(state.draftContent);
   renderValidation();
   if (issues.length) {
-    return setStatus("Fix validation errors before publishing.", "error");
+    setStatus("Fix validation errors before publishing.", "error");
+    return;
   }
-  if (!state.adminSecret) {
-    return setStatus("Enter the admin secret before publishing.", "warning");
+  if (!state.githubToken) {
+    setStatus("Enter a GitHub token before publishing.", "warning");
+    return;
   }
+  if (!state.repo.owner || !state.repo.name) {
+    setStatus("Could not infer the target repository from the current Pages URL.", "error");
+    return;
+  }
+
   try {
-    setStatus("Publishing content to GitHub...", "info");
-    const response = await apiFetch("/api/save-content", {
-      method: "POST",
-      headers: { "content-type": "application/json; charset=utf-8" },
-      body: JSON.stringify({
-        content: state.draftContent,
-        message: "Publish portfolio content"
-      })
-    });
-    const payload = await response.json();
-    if (!response.ok || !payload.ok) {
-      throw new Error(payload.error || "Publish failed.");
+    const commitMessage = `Publish portfolio content (${new Date().toISOString()})`;
+    const contentBase64 = encodeUtf8Base64(`${JSON.stringify(state.draftContent, null, 2)}\n`);
+    setStatus("Triggering the GitHub Actions publish workflow...", "info");
+
+    const response = await githubApi(
+      `/repos/${state.repo.owner}/${state.repo.name}/actions/workflows/${encodeURIComponent(state.workflowId)}/dispatches`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          ref: state.repo.branch,
+          inputs: {
+            content_base64: contentBase64,
+            commit_message: commitMessage
+          }
+        })
+      },
+      true
+    );
+
+    if (response.status !== 204) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.message || "Failed to trigger workflow_dispatch.");
     }
 
-    state.publishedContent = normalizeContent(state.draftContent);
-    state.publishedSha = payload.contentSha || state.publishedSha;
-    state.lastPublishCommit = payload.commitSha || "";
-    state.draftMeta = {
-      ...createDraftMeta(state.publishedSha),
-      basedOnPublishedSha: state.publishedSha,
-      dirty: false,
-      lastPublishedAt: new Date().toISOString()
-    };
+    state.draftMeta.lastPublishRequestedAt = new Date().toISOString();
     saveDraftToStorage();
-    renderAll();
-    setStatus("Published content.json to GitHub successfully.", "success");
+    renderStatus();
+    setStatus("Publish workflow queued on GitHub. Wait for Actions to finish, then refresh this page to confirm the new SHA.", "success");
   } catch (error) {
     console.error(error);
-    setStatus(error.message, "error");
+    setStatus(error.message || "Publish failed.", "error");
   }
 }
 
@@ -758,13 +799,12 @@ function handleClick(event) {
   if (!button) return;
   const { action } = button.dataset;
 
-  if (action === "restore-draft") return restoreDraft();
-  if (action === "discard-draft") return discardRecoveredDraft();
   if (action === "remove-reel") {
     state.draftContent.reels.splice(Number(button.dataset.reelIndex), 1);
     markDirty("Removed reel from draft.");
     renderReels();
-    return renderValidation();
+    renderValidation();
+    return;
   }
   if (action === "add-item") {
     const reel = state.draftContent.reels[Number(button.dataset.reelIndex)];
@@ -778,36 +818,41 @@ function handleClick(event) {
     });
     markDirty("Added a reel item.");
     renderReels();
-    return renderValidation();
+    renderValidation();
+    return;
   }
   if (action === "remove-item") {
     const reel = state.draftContent.reels[Number(button.dataset.reelIndex)];
     reel.items.splice(Number(button.dataset.itemIndex), 1);
     markDirty("Removed a reel item.");
     renderReels();
-    return renderValidation();
+    renderValidation();
+    return;
   }
   if (action === "remove-credential") {
     state.draftContent.credentials.splice(Number(button.dataset.index), 1);
     markDirty("Removed a credential.");
     renderCredentials();
-    return renderValidation();
+    renderValidation();
+    return;
   }
   if (action === "remove-contact") {
     state.draftContent.contacts.splice(Number(button.dataset.index), 1);
     markDirty("Removed a contact.");
     renderContacts();
-    return renderValidation();
+    renderValidation();
+    return;
   }
   if (action === "remove-queued-file") {
     state.uploadQueues[button.dataset.reelId].splice(Number(button.dataset.index), 1);
     renderReels();
-    return renderStatus();
+    renderStatus();
+    return;
   }
-  if (action === "upload-queue") return uploadQueuedFiles(button.dataset.reelId);
-  if (action === "upload-credential-image") return uploadCredentialImage(Number(button.dataset.index));
-  if (action === "upload-item-source") return uploadReelItemAsset(button.dataset.reelId, button.dataset.itemId, "source");
-  if (action === "upload-item-thumb") return uploadReelItemAsset(button.dataset.reelId, button.dataset.itemId, "thumb");
+  if (action === "add-queued-files") return addQueuedFilesToDraft(button.dataset.reelId);
+  if (action === "use-credential-image") return useCredentialImagePath(Number(button.dataset.index));
+  if (action === "use-item-source") return useReelItemAssetPath(button.dataset.reelId, button.dataset.itemId, "source");
+  if (action === "use-item-thumb") return useReelItemAssetPath(button.dataset.reelId, button.dataset.itemId, "thumb");
 }
 
 function handleInput(event) {
@@ -817,7 +862,8 @@ function handleInput(event) {
   if (node.id === "heroMediaType") {
     state.draftContent.hero.mediaType = node.value;
     renderHeroPreview();
-    return markDirty("Updated hero media type.");
+    markDirty("Updated hero media type.");
+    return;
   }
 
   if (node.dataset.path) {
@@ -855,19 +901,19 @@ function bindStaticButtons() {
     renderContacts();
     renderValidation();
   });
-  elements.connectBtn.addEventListener("click", rememberSecret);
+  elements.connectBtn.addEventListener("click", rememberGitHubToken);
   elements.saveDraft.addEventListener("click", saveDraft);
   elements.publish.addEventListener("click", publishContent);
   elements.refresh.addEventListener("click", async () => {
     await loadPublishedContent();
-    if (state.adminSecret) await refreshPublishedSha();
+    await refreshPublishedSha();
   });
-  document.getElementById("uploadBrandLogo").addEventListener("click", uploadBrandLogo);
-  document.getElementById("uploadHeroMedia").addEventListener("click", uploadHeroMedia);
+  document.getElementById("useBrandLogoPath").addEventListener("click", useBrandLogoPath);
+  document.getElementById("useHeroMediaPath").addEventListener("click", useHeroMediaPath);
 }
 
 function init() {
-  elements.secretInput.value = state.adminSecret;
+  elements.githubTokenInput.value = state.githubToken;
   bindStaticButtons();
   document.addEventListener("click", handleClick);
   document.addEventListener("input", handleInput);
@@ -878,9 +924,7 @@ function init() {
 
   setTheme(state.theme);
   setLanguage(state.lang);
-  loadPublishedContent().then(() => {
-    if (state.adminSecret) refreshPublishedSha();
-  });
+  loadPublishedContent().then(() => refreshPublishedSha());
 }
 
 elements.langToggle.addEventListener("click", () => setLanguage(state.lang === "en" ? "ar" : "en"));

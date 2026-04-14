@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="tr-api-base" content="">
   <title>Admin — TURKI Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,14 +63,14 @@
       </div>
 
       <div class="panel">
-        <h2 data-en="GitHub Proxy Auth" data-ar="تفويض وسيط GitHub">GitHub Proxy Auth</h2>
-        <p class="hint" data-en="Enter the shared admin secret used by the serverless proxy. Keep this out of the repo." data-ar="أدخل السر المشترك المستخدم مع الوسيط الخلفي. لا تحفظه داخل المستودع.">Enter the shared admin secret used by the serverless proxy. Keep this out of the repo.</p>
+        <h2 data-en="GitHub Workflow Auth" data-ar="تفويض سير عمل GitHub">GitHub Workflow Auth</h2>
+        <p class="hint" data-en="Enter a GitHub token with permission to trigger Actions workflows. The repo target is inferred from the current GitHub Pages URL." data-ar="أدخل رمز GitHub لديه صلاحية تشغيل سير العمل. يتم استنتاج المستودع المستهدف من رابط GitHub Pages الحالي.">Enter a GitHub token with permission to trigger Actions workflows. The repo target is inferred from the current GitHub Pages URL.</p>
         <div class="auth-grid">
           <label>
-            <span data-en="Admin Secret" data-ar="سر الإدارة">Admin Secret</span>
-            <input id="secretInput" type="password" placeholder="Shared secret">
+            <span data-en="GitHub Token" data-ar="رمز GitHub">GitHub Token</span>
+            <input id="githubTokenInput" type="password" placeholder="github_pat_...">
           </label>
-          <button type="button" id="connectSecret" data-en="Connect" data-ar="اتصال">Connect</button>
+          <button type="button" id="connectGitHub" data-en="Connect" data-ar="اتصال">Connect</button>
           <button type="button" id="refreshPublished" data-en="Refresh" data-ar="تحديث">Refresh</button>
         </div>
         <div class="meta-row">
@@ -99,10 +98,10 @@
           </div>
           <div class="upload-inline">
             <label>
-              <span data-en="Upload Logo" data-ar="رفع الشعار">Upload Logo</span>
+              <span data-en="Choose Local Logo File" data-ar="اختر ملف شعار محلي">Choose Local Logo File</span>
               <input id="brandLogoFile" type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml">
             </label>
-            <button type="button" id="uploadBrandLogo" data-en="Upload Logo to GitHub" data-ar="رفع الشعار إلى GitHub">Upload Logo to GitHub</button>
+            <button type="button" id="useBrandLogoPath" data-en="Use Local File Path" data-ar="استخدم مسار الملف المحلي">Use Local File Path</button>
           </div>
         </section>
 
@@ -132,10 +131,10 @@
           </div>
           <div class="upload-inline">
             <label>
-              <span data-en="Upload Hero Media" data-ar="رفع ملف رئيسي">Upload Hero Media</span>
+              <span data-en="Choose Local Hero File" data-ar="اختر ملفًا رئيسيًا محليًا">Choose Local Hero File</span>
               <input id="heroMediaFile" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime">
             </label>
-            <button type="button" id="uploadHeroMedia" data-en="Upload Hero Media to GitHub" data-ar="رفع الملف الرئيسي إلى GitHub">Upload Hero Media to GitHub</button>
+            <button type="button" id="useHeroMediaPath" data-en="Use Local File Path" data-ar="استخدم مسار الملف المحلي">Use Local File Path</button>
           </div>
         </section>
 
@@ -214,7 +213,7 @@
       <div class="section-head">
         <h2 data-en="Draft + Publish" data-ar="المسودة والنشر">Draft + Publish</h2>
       </div>
-      <p class="hint" data-en="Draft saves stay in localStorage. Publish pushes content.json to GitHub through the serverless proxy." data-ar="يتم حفظ المسودة محليًا في المتصفح. النشر يرسل content.json إلى GitHub عبر الوسيط الخلفي.">Draft saves stay in localStorage. Publish pushes content.json to GitHub through the serverless proxy.</p>
+      <p class="hint" data-en="Draft saves stay in localStorage. Publish triggers a GitHub Actions workflow that commits content.json. Media files must already exist in the repo at the paths you entered." data-ar="يتم حفظ المسودة محليًا في المتصفح. النشر يشغّل سير عمل GitHub Actions ليحدّث content.json. يجب أن تكون ملفات الوسائط موجودة مسبقًا داخل المستودع في المسارات التي أدخلتها.">Draft saves stay in localStorage. Publish triggers a GitHub Actions workflow that commits content.json. Media files must already exist in the repo at the paths you entered.</p>
       <div class="card-actions" style="margin-top:16px">
         <button type="button" id="saveDraft" data-en="Save Draft" data-ar="حفظ المسودة">Save Draft</button>
         <button type="button" class="button-primary" id="publishContent" data-en="Publish to GitHub" data-ar="نشر إلى GitHub">Publish to GitHub</button>

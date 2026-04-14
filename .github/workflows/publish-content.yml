@@ -1,0 +1,57 @@
+name: Publish portfolio content
+
+on:
+  workflow_dispatch:
+    inputs:
+      content_base64:
+        description: Base64-encoded content.json payload
+        required: true
+        type: string
+      commit_message:
+        description: Commit message for the content update
+        required: false
+        default: Publish portfolio content
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Decode content.json
+        env:
+          CONTENT_BASE64: ${{ inputs.content_base64 }}
+        run: |
+          python - <<'PY'
+          import base64
+          import os
+          from pathlib import Path
+          payload = os.environ["CONTENT_BASE64"]
+          decoded = base64.b64decode(payload.encode("utf-8"))
+          Path("content.json").write_bytes(decoded)
+          PY
+
+      - name: Validate content.json
+        run: |
+          python -m json.tool content.json > /dev/null
+
+      - name: Commit updated content
+        env:
+          COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content.json
+          if git diff --cached --quiet; then
+            echo "No content changes to commit."
+            exit 0
+          fi
+          git commit -m "${COMMIT_MESSAGE:-Publish portfolio content}"
+          git push
