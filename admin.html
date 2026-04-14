@@ -1,436 +1,227 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-theme="dark" data-lang="en" style="color-scheme:dark">
+<html lang="en" dir="ltr" data-theme="dark" data-lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#050710" />
-<title>Admin — TURKI Portfolio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://images.unsplash.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;700;800&family=Syne:wght@400;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-<style>
-/* === THEME VARS (identical to index.html) === */
-[data-theme="dark"]{--bg-deep:#050710;--bg-mid:#111729;--bg-surface:#0a0e1a;--text-primary:#e4d9c0;--text-dim:rgba(228,217,192,.55);--text-ghost:rgba(228,217,192,.12);--accent:#c9a84c;--accent-glow:rgba(201,168,76,.15);--red:#d4303d;--red-glow:rgba(212,48,61,.6);--panel:rgba(8,12,22,.92);--panel-border:rgba(228,217,192,.1);--film-bg:#e4d9c0;--film-perf:#050710;--frame-border:#050710;--selection-bg:#e4d9c0;--selection-fg:#050710;--ambient-a:rgba(201,168,76,.04);--ambient-b:rgba(212,48,61,.03);--grain-opacity:.035;--scanline-opacity:.015;--scanline-color:rgba(228,217,192,.08);--nav-bg:rgba(5,7,16,.9);--nav-bg-solid:rgba(5,7,16,.95);--camera-bg:linear-gradient(145deg,#0a0d14 0%,#040508 100%);--camera-shadow:0 60px 120px rgba(0,0,0,.8),0 8px 32px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);--camera-border:rgba(228,217,192,.06);--lb-bg:rgba(5,7,16,.96);--gradient-text-end:rgba(228,217,192,.5);--frame-filter:grayscale(75%) sepia(15%) contrast(1.1) brightness(.95);--frame-filter-hover:grayscale(0) sepia(0) contrast(1.05) brightness(1);--cta-fill:var(--text-primary);--cta-text-hover:var(--bg-deep);--footer-divider:var(--text-ghost);--film-strip-shadow:0 50px 100px rgba(0,0,0,.85),0 12px 40px rgba(0,0,0,.6),inset 0 1px 2px rgba(255,255,255,.35)}
-[data-theme="light"]{--bg-deep:#f4f0ea;--bg-mid:#ebe5db;--bg-surface:#faf8f4;--text-primary:#1a1a2e;--text-dim:rgba(26,26,46,.5);--text-ghost:rgba(26,26,46,.08);--accent:#9e7c2e;--accent-glow:rgba(158,124,46,.12);--red:#c4262f;--red-glow:rgba(196,38,47,.4);--panel:rgba(250,248,244,.95);--panel-border:rgba(26,26,46,.08);--film-bg:#1a1a2e;--film-perf:#f4f0ea;--frame-border:#1a1a2e;--selection-bg:#1a1a2e;--selection-fg:#f4f0ea;--ambient-a:rgba(158,124,46,.06);--ambient-b:rgba(196,38,47,.03);--grain-opacity:.02;--scanline-opacity:.008;--scanline-color:rgba(26,26,46,.04);--nav-bg:rgba(244,240,234,.85);--nav-bg-solid:rgba(244,240,234,.97);--camera-bg:linear-gradient(145deg,#2a2a3e 0%,#1a1a2e 100%);--camera-shadow:0 40px 80px rgba(0,0,0,.15),0 8px 24px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.08);--camera-border:rgba(26,26,46,.12);--lb-bg:rgba(244,240,234,.97);--gradient-text-end:rgba(26,26,46,.4);--frame-filter:grayscale(60%) sepia(10%) contrast(1.05) brightness(1);--frame-filter-hover:grayscale(0) sepia(0) contrast(1) brightness(1);--cta-fill:var(--text-primary);--cta-text-hover:var(--bg-deep);--footer-divider:rgba(26,26,46,.06);--film-strip-shadow:0 50px 100px rgba(0,0,0,.25),0 12px 40px rgba(0,0,0,.12)}
-
-/* Arabic */
-[data-lang="ar"]{direction:rtl;font-family:'Tajawal','JetBrains Mono',sans-serif}
-[data-lang="ar"] .brand-mark,[data-lang="ar"] .section-title,[data-lang="ar"] .reel-title,[data-lang="ar"] .footer-section h3,[data-lang="ar"] .bio-content h1{font-family:'Tajawal','Syne',sans-serif}
-[data-lang="ar"] .hero-summary,[data-lang="ar"] .reel-desc,[data-lang="ar"] .cred-list li,[data-lang="ar"] .contact-links a,[data-lang="ar"] .frame-caption span,[data-lang="ar"] .lb-meta p{font-family:'Tajawal','Cormorant Garamond',serif}
-[data-lang="ar"] .role-badge::before{display:none}
-
-/* Reset */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg-deep);color:var(--text-primary);font-family:'JetBrains Mono',monospace;overflow-x:hidden;min-height:100vh;transition:background .5s,color .5s;padding-top:34px}
-button,input,textarea,select{font:inherit}img,video{max-width:100%;display:block}
-::selection{background:var(--selection-bg);color:var(--selection-fg)}
-
-.ambient-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 20% 10%,var(--ambient-a) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 90%,var(--ambient-b) 0%,transparent 50%),radial-gradient(ellipse 100% 100% at 50% 0%,var(--bg-mid) 0%,var(--bg-deep) 100%);transition:background .5s}
-.grain{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:var(--grain-opacity);background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");mix-blend-mode:overlay;transition:opacity .5s}
-.scanlines{position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:var(--scanline-opacity);background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scanline-color) 2px,var(--scanline-color) 4px);transition:opacity .5s}
-
-/* Admin banner */
-.admin-banner{position:fixed;top:0;left:0;right:0;z-index:1100;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 20px;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(90deg,rgba(201,168,76,.12),rgba(201,168,76,.05),rgba(201,168,76,.12));border-bottom:1px solid rgba(201,168,76,.15);color:var(--accent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.admin-banner .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.5s ease-in-out infinite}
-.admin-banner a{color:var(--text-primary);text-decoration:none;margin-left:8px;border-bottom:1px solid var(--text-ghost);transition:border-color .3s}
-.admin-banner a:hover{border-color:var(--text-primary)}
-
-/* Nav */
-.top-bar{position:fixed;top:34px;left:0;width:100%;z-index:1000;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:24px 5vw;background:linear-gradient(to bottom,var(--nav-bg) 0%,transparent 100%);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:padding .4s cubic-bezier(.4,0,.2,1),background .4s}
-.top-bar.scrolled{padding:14px 5vw;background:var(--nav-bg-solid)}
-.brand-wrap{display:flex;align-items:center;gap:14px}
-.brand-logo-wrap{position:relative}
-.brand-logo{width:56px;height:56px;object-fit:contain;border-radius:10px;background:rgba(128,128,128,.04);border:1px solid var(--text-ghost);padding:6px;transition:transform .3s cubic-bezier(.22,1,.36,1)}
-.brand-mark{font-family:'Syne',sans-serif;letter-spacing:.14em;font-size:.85rem;font-weight:600;background:linear-gradient(135deg,var(--text-primary) 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.nav-right{display:flex;gap:20px;align-items:center}
-.nav-links{display:flex;gap:32px;align-items:center}
-.nav-links a{color:var(--text-primary);text-decoration:none;font-size:.68rem;letter-spacing:3.5px;text-transform:uppercase;opacity:.6;position:relative;padding-bottom:6px;transition:opacity .3s}
-.nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:linear-gradient(90deg,var(--accent),var(--text-primary));transform:scaleX(0);transform-origin:right;transition:transform .4s cubic-bezier(.22,1,.36,1)}
-.nav-links a:hover{opacity:1}
-.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
-.nav-toggle{width:36px;height:36px;border-radius:50%;border:1px solid var(--text-ghost);background:transparent;color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:background .3s cubic-bezier(.22,1,.36,1),color .3s cubic-bezier(.22,1,.36,1),border-color .3s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1);flex-shrink:0}
-.nav-toggle:hover{background:var(--text-primary);color:var(--bg-deep);border-color:var(--text-primary);transform:scale(1.08)}
-.lang-toggle{font-size:.65rem;font-weight:700;letter-spacing:1px;width:auto;padding:0 12px;border-radius:999px}
-
-/* Hero */
-.hero{min-height:100vh;display:flex;align-items:center;padding:0 5vw;position:relative}
-.hero::before{content:'';position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(to top,var(--bg-deep) 0%,transparent 100%);z-index:1;pointer-events:none}
-.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:7vw;align-items:center;width:100%;max-width:1600px;margin:0 auto;position:relative;z-index:2}
-.role-badge{display:inline-flex;align-items:center;gap:14px;margin-bottom:26px;letter-spacing:5px;font-size:.65rem;font-weight:300;color:var(--accent);animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .2s both}
-.role-badge::before{content:'';width:48px;height:1px;background:linear-gradient(90deg,transparent,var(--accent))}
-.bio-content h1{font-family:'Syne',sans-serif;font-size:clamp(3.8rem,8.5vw,7.5rem);line-height:.82;text-transform:uppercase;margin-bottom:24px;font-weight:800;background:linear-gradient(180deg,var(--text-primary) 30%,var(--gradient-text-end) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .35s both}
-.hero-summary{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text-dim);line-height:1.7;max-width:540px;margin-bottom:16px;font-style:italic;animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .5s both}
-.hero-subtitle{font-size:.78rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:42px;animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .6s both}
-.cta-row{display:flex;gap:16px;flex-wrap:wrap;animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .75s both}
-.cta-btn,.ghost-btn{padding:16px 30px;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;border:1px solid;cursor:pointer;position:relative;overflow:hidden;transition:color .35s cubic-bezier(.22,1,.36,1),border-color .35s cubic-bezier(.22,1,.36,1),box-shadow .35s cubic-bezier(.22,1,.36,1)}
-.cta-btn{background:transparent;color:var(--text-primary);border-color:var(--text-primary)}
-.cta-btn::before{content:'';position:absolute;inset:0;background:var(--cta-fill);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.22,1,.36,1);z-index:-1}
-.cta-btn:hover{color:var(--cta-text-hover)}.cta-btn:hover::before{transform:scaleX(1)}
-.ghost-btn{background:transparent;border-color:var(--text-ghost);color:var(--text-dim)}
-.ghost-btn:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 20px var(--accent-glow)}
-
-/* Camera */
-.viewfinder-wrapper{position:relative;transform:rotate(-1.5deg);animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .4s both}
-.camera-body{background:var(--camera-bg);padding:18px;border-radius:10px;box-shadow:var(--camera-shadow);border:1px solid var(--camera-border);transition:box-shadow .5s}
-.lcd-screen{position:relative;width:100%;aspect-ratio:16/10;background:#000;overflow:hidden;border-radius:3px;box-shadow:inset 0 0 30px rgba(0,0,0,.9)}
-.lcd-screen img,.lcd-screen video{width:100%;height:100%;object-fit:cover;transition:transform 8s linear}
-.hud{position:absolute;font-size:.6rem;text-shadow:0 1px 3px rgba(0,0,0,.9);z-index:10;pointer-events:none;letter-spacing:1px;font-family:'JetBrains Mono',monospace;font-weight:300}
-.hud-tl{top:14px;left:14px;display:flex;align-items:center;gap:8px;color:var(--red)}
-.hud-tr{top:14px;right:14px;color:#e4d9c0}.hud-bl{bottom:14px;left:14px;color:rgba(228,217,192,.6)}.hud-br{bottom:14px;right:14px;color:rgba(228,217,192,.6)}
-.rec-dot{width:8px;height:8px;background:var(--red);border-radius:50%;box-shadow:0 0 8px var(--red-glow);animation:blink 1.2s ease-in-out infinite}
-@keyframes blink{0%,40%{opacity:1}50%,90%{opacity:0}}
-.crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50px;height:50px;z-index:10;opacity:.3}
-.crosshair::before,.crosshair::after{content:'';position:absolute;background:#e4d9c0}
-.crosshair::before{top:50%;left:0;width:100%;height:1px;transform:translateY(-50%)}
-.crosshair::after{left:50%;top:0;height:100%;width:1px;transform:translateX(-50%)}
-.camera-specs{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:.58rem;color:rgba(228,217,192,.4);letter-spacing:2.5px}
-.camera-specs span:first-child{color:var(--accent);font-weight:700}
-
-/* Portfolio */
-.section-shell{max-width:1600px;margin:0 auto;padding:120px 5vw 50px}
-.section-title{text-align:center;font-family:'Syne',sans-serif;font-size:clamp(2.8rem,5.5vw,4.8rem);margin-bottom:16px;font-weight:800;letter-spacing:.02em;background:linear-gradient(180deg,var(--text-primary) 20%,var(--gradient-text-end) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.section-kicker{text-align:center;color:var(--text-dim);margin-bottom:64px;letter-spacing:4px;font-size:.68rem;text-transform:uppercase;font-weight:300}
-.reel-block{margin-bottom:90px;position:relative}
-.reel-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:28px;flex-wrap:wrap}
-.reel-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:700}
-.reel-desc{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:var(--text-dim);max-width:740px}
-.film-strip{background:var(--film-bg);padding:48px 0 66px;position:relative;transform:rotate(.8deg);box-shadow:var(--film-strip-shadow);overflow:hidden;transition:background .5s}
-.film-strip::before,.film-strip::after{content:'';position:absolute;left:0;width:100%;height:18px;z-index:5;background-image:repeating-linear-gradient(to right,var(--film-perf) 0,var(--film-perf) 22px,transparent 22px,transparent 38px)}
-.film-strip::before{top:12px}.film-strip::after{bottom:12px}
-.reel-track{position:relative;z-index:10;display:flex;gap:14px;padding:0 24px;width:max-content;animation:drift 28s linear infinite}
-.reel-track:hover{animation-play-state:paused}
-@keyframes drift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.frame{position:relative;overflow:hidden;aspect-ratio:16/10;border:2px solid var(--frame-border);background:#000;cursor:pointer;flex:0 0 min(300px,70vw)}
-.frame img,.frame video{width:100%;height:100%;object-fit:cover;filter:var(--frame-filter);transition:transform .7s cubic-bezier(.22,1,.36,1),filter .5s cubic-bezier(.4,0,.2,1)}
-.frame:hover img,.frame:hover video{transform:scale(1.08);filter:var(--frame-filter-hover)}
-/* FIXED: media-type always readable */
-.media-type{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.7);color:#c9a84c;padding:4px 10px;font-size:.58rem;font-weight:700;letter-spacing:2.5px;z-index:4;border:1px solid rgba(201,168,76,.3);backdrop-filter:blur(4px)}
-.frame-caption{position:absolute;left:0;right:0;bottom:0;padding:20px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.85));color:white;z-index:3;transform:translateY(4px);opacity:.85;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .4s}
-.frame:hover .frame-caption{transform:translateY(0);opacity:1}
-.frame-caption strong{display:block;font-size:.85rem;margin-bottom:3px;font-family:'Syne',sans-serif;color:white}
-.frame-caption span{font-size:.68rem;opacity:.75;font-family:'Cormorant Garamond',serif;font-style:italic;color:rgba(255,255,255,.85)}
-.add-reel-global{display:flex;justify-content:center;margin-top:10px}
-
-/* Footer */
-.footer-section{padding:10vw 5vw 8vw;display:grid;grid-template-columns:1fr 1fr;gap:7vw;max-width:1600px;margin:0 auto;border-top:1px solid var(--footer-divider);position:relative}
-.footer-section::before{content:'';position:absolute;top:0;left:50%;width:1px;height:80%;background:linear-gradient(to bottom,var(--footer-divider),transparent)}
-.footer-section h3{font-family:'Syne',sans-serif;font-size:2.6rem;margin-bottom:38px;font-weight:700}
-.cred-list{list-style:none;border-top:1px solid var(--footer-divider)}
-.cred-list li{padding:22px 0;border-bottom:1px solid var(--footer-divider);display:flex;justify-content:space-between;gap:20px;align-items:center;font-family:'Cormorant Garamond',serif;font-size:1.15rem;transition:padding-left .3s cubic-bezier(.22,1,.36,1)}
-.cred-list li:hover{padding-left:12px}
-.cred-list li .cred-title.has-image{cursor:pointer;transition:color .3s}.cred-list li .cred-title.has-image:hover{color:var(--accent)}
-.cred-list li .cred-title.has-image::after{content:' 🖼';font-size:.7em;opacity:.5}
-.cred-year{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text-dim);white-space:nowrap}
-.contact-links{display:flex;flex-direction:column}
-.contact-links a{text-decoration:none;color:var(--text-dim);font-size:1.2rem;font-family:'Cormorant Garamond',serif;display:flex;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid var(--footer-divider);transition:color .3s,padding-left .3s cubic-bezier(.22,1,.36,1)}
-.contact-links a:hover{color:var(--text-primary);padding-left:12px}
-.contact-links a span{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--accent)}
-.copyright{text-align:center;padding:40px 5vw 50px;font-size:.65rem;letter-spacing:3px;color:var(--text-ghost);text-transform:uppercase}
-
-/* Lightbox */
-#lightbox{position:fixed;inset:0;z-index:50000;background:var(--lb-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s cubic-bezier(.4,0,.2,1)}
-#lightbox.active{opacity:1;pointer-events:auto}
-#lightbox-inner{max-width:min(1100px,92vw);width:100%}
-#lightbox-content{max-width:100%;max-height:78vh;margin:0 auto;border:1px solid var(--panel-border);box-shadow:0 60px 120px rgba(0,0,0,.4);background:#000}
-#lightbox-content img,#lightbox-content video{max-height:78vh;width:100%;object-fit:contain}
-.close-lb{position:absolute;top:28px;right:36px;color:var(--text-primary);border:1px solid var(--text-ghost);background:transparent;padding:10px 20px;cursor:pointer;font-size:.7rem;letter-spacing:2px;transition:background .3s cubic-bezier(.22,1,.36,1),color .3s cubic-bezier(.22,1,.36,1),border-color .3s cubic-bezier(.22,1,.36,1)}
-.close-lb:hover{background:var(--text-primary);color:var(--bg-deep)}
-.lb-meta{margin-top:18px}.lb-meta h4{font-family:'Syne',sans-serif;font-size:1.4rem;margin-bottom:6px}.lb-meta p{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-style:italic;color:var(--text-dim)}
-
-/* === ADMIN OVERLAY === */
-.toolbar{position:fixed;right:20px;bottom:20px;z-index:65000;display:flex;gap:8px;align-items:flex-end}
-.toolbar button,.file-menu summary{padding:12px 16px;border-radius:999px;font-size:.65rem;letter-spacing:1.4px;text-transform:uppercase;border:1px solid rgba(228,217,192,.2);background:var(--panel);color:var(--text-primary);cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .25s cubic-bezier(.22,1,.36,1),color .25s cubic-bezier(.22,1,.36,1),border-color .25s cubic-bezier(.22,1,.36,1),transform .25s cubic-bezier(.22,1,.36,1);list-style:none}
-.toolbar button:hover,.file-menu summary:hover{background:var(--text-primary);color:var(--bg-deep);border-color:var(--text-primary);transform:translateY(-1px)}
-.toolbar .btn-live{border-color:rgba(201,168,76,.4);color:var(--accent)}
-.file-menu{position:relative}
-.file-menu summary::-webkit-details-marker{display:none}
-.file-list{position:absolute;right:0;bottom:52px;display:grid;gap:8px;min-width:170px;padding:10px;background:var(--panel);border:1px solid var(--panel-border);border-radius:14px}
-.file-menu:not([open]) .file-list{display:none}
-
-/* FIXED: Inline buttons on film strip — always visible with dark bg + light text */
-.inline-btn{display:none;position:absolute;z-index:2000;padding:7px 12px;border-radius:999px;font-size:.62rem;letter-spacing:1.4px;text-transform:uppercase;border:1px solid rgba(228,217,192,.3);background:rgba(5,7,16,.85);color:#e4d9c0;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .25s cubic-bezier(.22,1,.36,1),color .25s cubic-bezier(.22,1,.36,1),border-color .25s cubic-bezier(.22,1,.36,1)}
-.inline-btn:hover{background:var(--accent);color:#050710;border-color:var(--accent)}
-.edit-mode .inline-btn{display:block}
-.inline-btn{pointer-events:auto}
-.brand-edit-btn{top:-8px;left:6px}
-.hero-media-edit{top:10px;left:10px}
-.reel-actions{position:absolute;top:-18px;right:0;display:flex;gap:8px;z-index:1200}
-.frame-actions{position:absolute;top:10px;left:10px;display:flex;gap:6px;z-index:6}
-.plus-under-reel{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);z-index:11}
-.edit-mode .editable:hover,.edit-mode .media-editable:hover,.edit-mode .reel-block:hover,.edit-mode .cred-list li:hover,.edit-mode .contact-links a:hover,.edit-mode .brand-logo-wrap:hover,.edit-mode .viewfinder-wrapper:hover{outline:1px dashed rgba(201,168,76,.5);outline-offset:6px}
-.editable.is-editing{background:rgba(201,168,76,.08);border-radius:4px;padding:4px 8px}
-
-.tip{position:fixed;left:20px;bottom:20px;z-index:65000;padding:10px 14px;border-radius:12px;max-width:340px;background:var(--panel);border:1px solid var(--panel-border);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:.72rem;color:rgba(228,217,192,.65)}
-.tip strong{color:var(--accent)}
-.bio-content h1,.section-title,.reel-title{overflow-wrap:anywhere}
-[data-lang="ar"] .bio-content h1{line-height:1.02;font-size:clamp(2.8rem,7vw,5.5rem)}
-[data-lang="ar"] .section-title{font-size:clamp(2.2rem,5vw,4rem)}
-
-/* Modal */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:70000;display:none;align-items:center;justify-content:center;padding:20px}
-.modal-backdrop.open{display:flex}
-.modal{width:min(680px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,rgba(14,18,30,.97),rgba(8,10,18,.98));border:1px solid rgba(228,217,192,.08);border-radius:18px;padding:28px;box-shadow:0 40px 80px rgba(0,0,0,.7)}
-.modal h3{font-family:'Syne',sans-serif;font-size:1.5rem;margin-bottom:18px;color:var(--accent)}
-.modal .field{display:grid;gap:6px;margin-bottom:14px}
-.modal label{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(228,217,192,.5)}
-.modal input,.modal textarea,.modal select{width:100%;padding:12px 14px;background:rgba(0,0,0,.35);color:#e4d9c0;border:1px solid rgba(228,217,192,.1);border-radius:10px;transition:border-color .3s}
-.modal input:focus-visible,.modal textarea:focus-visible,.modal select:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-color:rgba(201,168,76,.4)}
-.modal textarea{min-height:80px;resize:vertical}
-.modal .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.modal .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.modal button{border:1px solid rgba(228,217,192,.2);background:transparent;color:#e4d9c0;cursor:pointer;padding:11px 18px;border-radius:999px;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;transition:background .25s cubic-bezier(.22,1,.36,1),color .25s cubic-bezier(.22,1,.36,1),border-color .25s cubic-bezier(.22,1,.36,1)}
-.modal button:hover{background:#e4d9c0;color:#050710}
-.hidden-input{display:none}
-
-@keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:1000px){.hero-grid,.footer-section{grid-template-columns:1fr}.footer-section::before{display:none}.nav-links{display:none}.hero{padding-top:100px}.viewfinder-wrapper{transform:rotate(0);order:-1}.bio-content h1{font-size:clamp(3rem,12vw,5rem)}.film-strip{transform:rotate(0)}.toolbar{right:10px;bottom:10px}.tip{left:10px;bottom:10px;max-width:280px}}
-@media(max-width:600px){.cta-row{flex-direction:column}.cta-btn,.ghost-btn{width:100%;text-align:center}.modal .row2{grid-template-columns:1fr}.toolbar{right:8px;left:8px;bottom:8px;justify-content:space-between}.tip{display:none}.file-list{left:0;right:auto;bottom:52px}}
-
-/* ══ Focus States ══ */
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-.nav-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px;box-shadow:0 0 0 4px var(--accent-glow)}
-.cta-btn:focus-visible,.ghost-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.nav-links a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
-.frame:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.close-lb:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.contact-links a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.toolbar button:focus-visible,.inline-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-
-/* ══ Touch ══ */
-button,a,.frame,.nav-toggle{touch-action:manipulation;-webkit-tap-highlight-color:rgba(201,168,76,.15)}
-
-/* ══ Heading Wrap ══ */
-.bio-content h1,.section-title,.reel-title{text-wrap:balance}
-
-/* ══ Overscroll ══ */
-#lightbox,.modal-backdrop{overscroll-behavior:contain}
-
-/* ══ Reduced Motion ══ */
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important}
-  .reel-track{animation:none !important}
-  .film-strip{transform:none !important}
-  .viewfinder-wrapper{transform:none !important}
-}
-
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-deep)}::-webkit-scrollbar-thumb{background:var(--text-ghost);border-radius:3px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="tr-api-base" content="">
+  <title>Admin — TURKI Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;700;800&family=Syne:wght@400;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    [data-theme="dark"]{--bg:#050710;--bg-soft:#111729;--panel:rgba(8,12,22,.92);--panel-strong:#0f1628;--line:rgba(228,217,192,.14);--text:#e4d9c0;--muted:rgba(228,217,192,.7);--accent:#c9a84c;--danger:#d4303d;--success:#2fb980}
+    [data-theme="light"]{--bg:#f6efe6;--bg-soft:#e9e0d3;--panel:rgba(255,255,255,.88);--panel-strong:#ffffff;--line:rgba(17,23,41,.12);--text:#111729;--muted:rgba(17,23,41,.68);--accent:#9e7c2e;--danger:#b3232b;--success:#187a52}
+    [data-lang="ar"]{direction:rtl;font-family:'Tajawal','JetBrains Mono',sans-serif}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at top,var(--bg-soft),var(--bg));color:var(--text);font-family:'JetBrains Mono',monospace}
+    input,textarea,select,button{font:inherit}img,video{max-width:100%;display:block}
+    .top-bar{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:20px 5vw;background:rgba(5,7,16,.86);backdrop-filter:blur(14px);z-index:100;border-bottom:1px solid var(--line)}.top-bar.scrolled{box-shadow:0 16px 40px rgba(0,0,0,.16)}.brand-wrap{display:flex;align-items:center;gap:14px}.brand-mark{font-family:'Syne',sans-serif;letter-spacing:.16em;font-size:.84rem;font-weight:700}.nav-right{display:flex;align-items:center;gap:14px}.nav-toggle{width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer}
+    .page{padding:26px 5vw 80px;max-width:1500px;margin:0 auto}.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-bottom:24px}.panel,.editor-card,.nested-card{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:22px}.panel h2,.editor-card h2,.editor-card h3,.nested-card strong{margin:0;font-family:'Syne',sans-serif}
+    .status-bar{display:grid;grid-template-columns:1.15fr .85fr;gap:24px;margin-bottom:24px}.status-box{display:flex;flex-direction:column;gap:16px}.chip-row{display:flex;gap:12px;flex-wrap:wrap}.chip{padding:10px 14px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:1.5px}.chip[data-active="true"]{color:var(--text);border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.12)}
+    .status-message{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--muted)}.status-message[data-tone="success"]{border-color:rgba(47,185,128,.4);color:var(--success)}.status-message[data-tone="error"]{border-color:rgba(212,48,61,.45);color:#ffb0b5}.status-message[data-tone="warning"]{border-color:rgba(201,168,76,.45);color:var(--accent)}.status-message[data-tone="info"]{border-color:rgba(120,180,255,.45);color:#91b5ff}
+    .summary{display:flex;flex-direction:column;gap:8px;color:var(--muted)}.summary strong{color:var(--text)}.auth-grid,.grid{display:grid;gap:16px}.auth-grid{grid-template-columns:1fr auto auto}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    label{display:flex;flex-direction:column;gap:8px;color:var(--muted);font-size:.82rem}input,textarea,select{width:100%;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--panel-strong);color:var(--text)}textarea{min-height:110px;resize:vertical}
+    button{padding:14px 18px;border-radius:16px;border:1px solid var(--line);background:var(--panel-strong);color:var(--text);cursor:pointer}button:hover{border-color:rgba(201,168,76,.55)}.button-primary{background:var(--text);color:var(--bg)}.button-danger{border-color:rgba(212,48,61,.4);color:#ffb0b5}
+    .stack{display:flex;flex-direction:column;gap:24px}.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.card-actions{display:flex;gap:10px;flex-wrap:wrap}.hint{font-size:.78rem;color:var(--muted);margin:0}
+    .restore-banner{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 18px;border:1px solid rgba(201,168,76,.4);border-radius:18px;background:rgba(201,168,76,.08);margin-bottom:18px}.restore-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .preview-box{min-height:180px;border:1px dashed var(--line);border-radius:20px;overflow:hidden;background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center}.preview-box img,.preview-box video{width:100%;height:100%;object-fit:cover}
+    .upload-inline,.upload-panel{display:flex;gap:14px;flex-wrap:wrap;align-items:end;margin-top:14px}.upload-panel{padding:18px;border:1px dashed var(--line);border-radius:18px;background:rgba(255,255,255,.02)}.upload-panel input[type="file"]{padding:10px}
+    .queue-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;width:100%}.queue-list li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:14px}
+    .empty-card{padding:18px;border:1px dashed var(--line);border-radius:18px;color:var(--muted)}.nested-card{margin-top:14px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:14px}.validation-list{margin:0;padding-left:18px;color:var(--muted);display:flex;flex-direction:column;gap:10px}
+    .publish-meta{font-size:.74rem;color:var(--muted)}.meta-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    @media(max-width:980px){.hero-grid,.status-bar,.auth-grid,.grid.two,.grid.three{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
-<div class="ambient-bg" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div><div class="scanlines" aria-hidden="true"></div>
-
-<div class="admin-banner"><span class="dot"></span>ADMIN MODE — Edit then Save<a href="./index.html" target="_blank">↗ Live Site</a></div>
-
-<nav class="top-bar" id="topBar">
-  <div class="brand-wrap">
-    <div class="brand-logo-wrap media-editable"><img class="brand-logo" id="brandLogo" src="1000160206.jpg" alt="TB Visuals — Admin" width="56" height="56"><button class="inline-btn brand-edit-btn" type="button" onclick="openMediaModal('brandLogo')">Cam</button></div>
-    <div class="brand-mark editable" id="brandMark" data-path="brand.mark">TB VISUALS</div>
-  </div>
-  <div class="nav-right">
-    <div class="nav-links"><a href="#work" data-en="Portfolio" data-ar="المعرض">Portfolio</a><a href="#credentials" data-en="Credentials" data-ar="الاعتمادات">Credentials</a><a href="#contact" data-en="Contact" data-ar="تواصل">Contact</a></div>
-    <button class="nav-toggle lang-toggle" id="langToggle" aria-label="Toggle language">EN</button>
-    <button class="nav-toggle" id="themeToggle" aria-label="Toggle theme"></button>
-  </div>
-</nav>
-
-<section class="hero"><div class="hero-grid">
-  <div class="bio-content">
-    <div class="role-badge editable" id="heroRole" data-path="hero.role"></div>
-    <h1 class="editable" id="heroName" data-path="hero.name">TURKI</h1>
-    <p class="hero-summary editable" id="heroSummary" data-path="hero.summary"></p>
-    <div class="hero-subtitle editable" id="heroSubtitle" data-path="hero.subtitle"></div>
-    <div class="cta-row">
-      <button class="cta-btn" id="ctaPortfolio" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">Access Portfolio ↓</button>
-      <button class="ghost-btn" id="ctaBook" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book Now</button>
+  <nav class="top-bar" id="topBar">
+    <div class="brand-wrap">
+      <span class="brand-mark" id="brandMark">TB VISUALS</span>
     </div>
-  </div>
-  <div class="viewfinder-wrapper media-editable">
-    <button class="inline-btn hero-media-edit" type="button" onclick="openMediaModal('heroMedia')">Cam</button>
-    <div class="camera-body"><div class="lcd-screen" id="heroMediaWrap"></div><div class="camera-specs editable" id="heroSpecs" data-path="hero.specs"></div></div>
-  </div>
-</div></section>
-
-<section id="work" class="section-shell">
-  <h2 class="section-title editable" id="portfolioTitle" data-path="portfolio.title"></h2>
-  <div class="section-kicker editable" id="portfolioDesc" data-path="portfolio.description"></div>
-  <div id="reelsContainer"></div>
-  <div class="add-reel-global"><button class="inline-btn" type="button" onclick="addReel()">+ Add Reel</button></div>
-</section>
-
-<section class="footer-section" id="credentials">
-  <div>
-    <h3 class="editable" id="credentialsTitle" data-path="credentialsTitle"></h3>
-    <ul class="cred-list" id="credentialsList"></ul>
-    <div style="margin-top:16px"><button class="inline-btn" type="button" onclick="addCredential()">+ Add</button></div>
-  </div>
-  <div id="contact">
-    <h3 class="editable" id="contactTitle" data-path="contactTitle"></h3>
-    <div class="contact-links" id="contactLinks"></div>
-    <div style="margin-top:16px"><button class="inline-btn" type="button" onclick="addContact()">+ Add</button></div>
-  </div>
-</section>
-<div class="copyright">&copy; 2026 Turki — All Rights Reserved</div>
-
-<div id="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer" onclick="closeLightbox(event)"><button class="close-lb" type="button" onclick="closeLightbox(event)" aria-label="Close viewer">CLOSE ✕</button><div id="lightbox-inner"><div id="lightbox-content"></div><div class="lb-meta"><h4 id="lbTitle"></h4><p id="lbDesc"></p></div></div></div>
-
-<div class="toolbar">
-  <button type="button" onclick="toggleEditMode()" id="editToggleBtn" data-en="Edit: Off" data-ar="التحرير: متوقف">Edit: Off</button>
-  <details class="file-menu">
-    <summary data-en="File" data-ar="ملف">File</summary>
-    <div class="file-list">
-      <button type="button" onclick="saveData()" data-en="Save" data-ar="حفظ">Save</button>
-      <button type="button" onclick="exportJSON()" data-en="Export JSON" data-ar="تصدير JSON">Export JSON</button>
-      <button type="button" onclick="document.getElementById('importJsonInput').click()" data-en="Import JSON" data-ar="استيراد JSON">Import JSON</button>
-      <button type="button" onclick="showPublishGuide()" data-en="Publish Guide" data-ar="دليل النشر">Publish Guide</button>
-      <button type="button" onclick="resetData()" data-en="Reset" data-ar="إعادة تعيين">Reset</button>
+    <div class="nav-right">
+      <button class="nav-toggle" id="langToggle" type="button">AR</button>
+      <button class="nav-toggle" id="themeToggle" type="button">☀️</button>
     </div>
-  </details>
-  <button type="button" class="btn-live" onclick="window.open('./index.html','_blank')" data-en="↗ Live" data-ar="↗ المعاينة">↗ Live</button>
-  <input id="importJsonInput" class="hidden-input" type="file" accept="application/json" onchange="importJSON(event)">
-</div>
-<div class="tip">Toggle <strong>Edit</strong> → double-click text → <strong>Cam</strong> for media. For GitHub Pages storage, keep files in <strong>/assets/uploads</strong> and paste the public URL.</div>
+  </nav>
 
-<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-label="Edit dialog"><div class="modal" id="modalBox"></div></div>
+  <main class="page">
+    <div class="restore-banner" id="restoreBanner" hidden>
+      <span id="restoreText"></span>
+      <div class="restore-actions">
+        <button type="button" id="restoreDraft" data-en="Restore Draft" data-ar="استعادة المسودة">Restore Draft</button>
+        <button type="button" id="discardDraft" data-en="Discard Draft" data-ar="حذف المسودة">Discard Draft</button>
+      </div>
+    </div>
 
-<script>
-const STORAGE_KEY='turkiPortfolioDataV4',THEME_KEY='turkiPortfolioTheme',LANG_KEY='turkiPortfolioLang',CONTENT_URL='./content.json';
-let editMode=false,lang=localStorage.getItem(LANG_KEY)||'en';
+    <section class="status-bar">
+      <div class="panel status-box">
+        <h2 data-en="Publishing Status" data-ar="حالة النشر">Publishing Status</h2>
+        <div class="chip-row">
+          <span class="chip" id="chipDraft">Draft</span>
+          <span class="chip" id="chipUpload">Uploads</span>
+          <span class="chip" id="chipPublish">Publish</span>
+        </div>
+        <div class="status-message" id="statusMessage">Loading published content...</div>
+        <div class="summary" id="summaryContent"></div>
+      </div>
 
-function cryptoRandom(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
-function clone(o){return JSON.parse(JSON.stringify(o))}
-function escapeHtml(s=''){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-function escapeAttr(s=''){return escapeHtml(s).replace(/'/g,'&#39;')}
-function t(obj){if(!obj)return '';if(typeof obj==='string')return obj;const v=obj[lang]||obj.en||obj.ar||'';return typeof v==='string'?v:''}
-function tSet(obj,val){if(!obj||typeof obj!=='object')return {[lang]:val,en:lang==='en'?val:'',ar:lang==='ar'?val:''};obj[lang]=val;return obj}
-function pathGet(p){let c=data;for(const k of p.split('.'))c=c?.[k];return c}
-function pathSet(p,v){const k=p.split('.');let c=data;for(let i=0;i<k.length-1;i++)c=c[k[i]];c[k.at(-1)]=v}
-function fileToDataUrl(file,cb){if(!file)return;const r=new FileReader();r.onload=()=>cb(r.result,file);r.readAsDataURL(file)}
-function fileToDataUrlPromise(file){return new Promise(resolve=>fileToDataUrl(file,(url,f)=>resolve({url,file:f})))}
+      <div class="panel">
+        <h2 data-en="GitHub Proxy Auth" data-ar="تفويض وسيط GitHub">GitHub Proxy Auth</h2>
+        <p class="hint" data-en="Enter the shared admin secret used by the serverless proxy. Keep this out of the repo." data-ar="أدخل السر المشترك المستخدم مع الوسيط الخلفي. لا تحفظه داخل المستودع.">Enter the shared admin secret used by the serverless proxy. Keep this out of the repo.</p>
+        <div class="auth-grid">
+          <label>
+            <span data-en="Admin Secret" data-ar="سر الإدارة">Admin Secret</span>
+            <input id="secretInput" type="password" placeholder="Shared secret">
+          </label>
+          <button type="button" id="connectSecret" data-en="Connect" data-ar="اتصال">Connect</button>
+          <button type="button" id="refreshPublished" data-en="Refresh" data-ar="تحديث">Refresh</button>
+        </div>
+        <div class="meta-row">
+          <span class="publish-meta" id="publishMeta">content.json sha unavailable</span>
+          <span class="publish-meta">SHA: <code id="publishedSha">Unavailable</code></span>
+        </div>
+      </div>
+    </section>
 
-const defaultData={brand:{mark:'TB VISUALS',logo:'1000160206.jpg'},hero:{name:'TURKI',role:{en:'DIRECTOR OF PHOTOGRAPHY',ar:'مدير التصوير السينمائي'},summary:{en:'Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.',ar:'أحوّل المشاهد الواقعية إلى لغة بصرية سينمائية، مع تركيز على التصوير التحريري الراقي والفيديو الحركي.'},subtitle:{en:'Commercials / Editorial / Motion / Creative Direction',ar:'إعلانات / تصوير تحريري / فيديو حركي / إخراج إبداعي'},mediaType:'image',mediaUrl:'https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80',specs:['SONY α7S III','24-70mm G-MASTER','S-LOG3','120FPS']},portfolio:{title:{en:'THE REEL',ar:'المعرض'},description:{en:'Selected motion and still work',ar:'مختارات من أعمال الصورة والفيديو'}},cta:{portfolio:{en:'Access Portfolio ↓',ar:'تصفح المعرض ↓'},book:{en:'Book Now',ar:'احجز الآن'}},reels:[{id:cryptoRandom(),title:{en:'Editorial Motion',ar:'سرد بصري تحريري'},description:{en:'A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.',ar:'شريط مختار يجمع الإخراج البصري والبورتريه وبناء المزاج والسرد الإعلاني.'},items:[{id:cryptoRandom(),type:'image',title:{en:'Shot 1',ar:'لقطة أولى'},description:{en:'Editorial portrait framing',ar:'تكوين بورتريه تحريري'},src:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80'},{id:cryptoRandom(),type:'video',title:{en:'Shot 2',ar:'لقطة ثانية'},description:{en:'Raw video showcase',ar:'عرض فيديو خام'},src:'https://www.w3schools.com/html/mov_bbb.mp4',thumb:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80'},{id:cryptoRandom(),type:'image',title:{en:'Shot 3',ar:'لقطة ثالثة'},description:{en:'Documentary texture',ar:'ملمس وثائقي'},src:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=700&q=80'},{id:cryptoRandom(),type:'image',title:{en:'Shot 4',ar:'لقطة رابعة'},description:{en:'Commercial still frame',ar:'إطار إعلاني ثابت'},src:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1200&q=80',thumb:'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=700&q=80'}]}],credentialsTitle:{en:'Credentials',ar:'الاعتمادات'},credentials:[{id:cryptoRandom(),title:{en:'Sony Alpha Cinema Master',ar:'اعتماد سوني ألفا للسينما'},year:'2023',image:''},{id:cryptoRandom(),title:{en:'Adobe Certified Professional',ar:'محترف أدوبي المعتمد'},year:'2022',image:''},{id:cryptoRandom(),title:{en:'Advanced Drone Pilot (Part 107)',ar:'طيار طائرات مسيّرة متقدم (107)'},year:'2021',image:''}],contactTitle:{en:'Direct Line',ar:'تواصل مباشر'},contacts:[{id:cryptoRandom(),label:{en:'Instagram',ar:'إنستغرام'},value:'@turki_visuals',href:'#'},{id:cryptoRandom(),label:{en:'WhatsApp',ar:'واتساب'},value:'+966 5X XXX XXXX',href:'#'},{id:cryptoRandom(),label:{en:'Email',ar:'بريد إلكتروني'},value:'booking@turki.com',href:'mailto:booking@turki.com'}]};
+    <section class="hero-grid">
+      <div class="stack">
+        <section class="editor-card">
+          <div class="section-head">
+            <h2 data-en="Brand" data-ar="الهوية">Brand</h2>
+          </div>
+          <div class="grid two">
+            <label>
+              <span data-en="Brand Mark" data-ar="اسم الهوية">Brand Mark</span>
+              <input id="brandMarkInput" data-path="brand.mark">
+            </label>
+            <label>
+              <span data-en="Brand Logo URL" data-ar="رابط الشعار">Brand Logo URL</span>
+              <input id="brandLogoInput" data-path="brand.logo">
+            </label>
+          </div>
+          <div class="upload-inline">
+            <label>
+              <span data-en="Upload Logo" data-ar="رفع الشعار">Upload Logo</span>
+              <input id="brandLogoFile" type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml">
+            </label>
+            <button type="button" id="uploadBrandLogo" data-en="Upload Logo to GitHub" data-ar="رفع الشعار إلى GitHub">Upload Logo to GitHub</button>
+          </div>
+        </section>
 
-function toLangObject(v){if(v&&typeof v==='object')return {en:v.en||'',ar:v.ar||''};const str=typeof v==='string'?v:'';return {en:str,ar:str}}
-function normalizeData(raw){const d=clone(defaultData);const src=(raw&&typeof raw==='object')?raw:{};d.brand={...d.brand,...src.brand};d.hero={...d.hero,...src.hero};d.hero.role=toLangObject(src?.hero?.role??d.hero.role);d.hero.summary=toLangObject(src?.hero?.summary??d.hero.summary);d.hero.subtitle=toLangObject(src?.hero?.subtitle??d.hero.subtitle);d.portfolio={...d.portfolio,...src.portfolio};d.portfolio.title=toLangObject(src?.portfolio?.title??d.portfolio.title);d.portfolio.description=toLangObject(src?.portfolio?.description??d.portfolio.description);d.cta={...d.cta,...src.cta};d.cta.portfolio=toLangObject(src?.cta?.portfolio??d.cta.portfolio);d.cta.book=toLangObject(src?.cta?.book??d.cta.book);d.credentialsTitle=toLangObject(src?.credentialsTitle??d.credentialsTitle);d.contactTitle=toLangObject(src?.contactTitle??d.contactTitle);d.reels=Array.isArray(src.reels)?src.reels:d.reels;d.credentials=Array.isArray(src.credentials)?src.credentials:d.credentials;d.contacts=Array.isArray(src.contacts)?src.contacts:d.contacts;return d}
-function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(r)return normalizeData(JSON.parse(r));}catch{}return normalizeData(defaultData)}
-let data=loadData();
+        <section class="editor-card">
+          <div class="section-head">
+            <h2 data-en="Hero" data-ar="القسم الرئيسي">Hero</h2>
+          </div>
+          <div class="grid two">
+            <label><span>Hero Name</span><input id="heroNameInput" data-path="hero.name"></label>
+            <label><span>Hero Media Type</span><select id="heroMediaType"><option value="image">Image</option><option value="video">Video</option></select></label>
+          </div>
+          <div class="grid two">
+            <label><span>Role (EN)</span><input id="heroRoleEn" data-path="hero.role" data-lang-field="en"></label>
+            <label><span>Role (AR)</span><input id="heroRoleAr" dir="rtl" data-path="hero.role" data-lang-field="ar"></label>
+          </div>
+          <div class="grid two">
+            <label><span>Summary (EN)</span><textarea id="heroSummaryEn" data-path="hero.summary" data-lang-field="en"></textarea></label>
+            <label><span>Summary (AR)</span><textarea id="heroSummaryAr" dir="rtl" data-path="hero.summary" data-lang-field="ar"></textarea></label>
+          </div>
+          <div class="grid two">
+            <label><span>Subtitle (EN)</span><input id="heroSubtitleEn" data-path="hero.subtitle" data-lang-field="en"></label>
+            <label><span>Subtitle (AR)</span><input id="heroSubtitleAr" dir="rtl" data-path="hero.subtitle" data-lang-field="ar"></label>
+          </div>
+          <div class="grid two">
+            <label><span>Hero Media URL</span><input id="heroMediaUrl" data-path="hero.mediaUrl"></label>
+            <label><span>Specs (comma separated)</span><input id="heroSpecsInput" data-path="hero.specs" data-transform="list"></label>
+          </div>
+          <div class="upload-inline">
+            <label>
+              <span data-en="Upload Hero Media" data-ar="رفع ملف رئيسي">Upload Hero Media</span>
+              <input id="heroMediaFile" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime">
+            </label>
+            <button type="button" id="uploadHeroMedia" data-en="Upload Hero Media to GitHub" data-ar="رفع الملف الرئيسي إلى GitHub">Upload Hero Media to GitHub</button>
+          </div>
+        </section>
 
-function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));pulseTip(lang==='ar'?'تم الحفظ محليًا. صدّر JSON ثم ارفعه إلى GitHub Pages.':'Saved locally. Export JSON and commit to publish on GitHub Pages.')}
-function resetData(){if(!confirm('Reset all?'))return;data=clone(defaultData);saveData();render()}
-function exportJSON(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='portfolio-content.json';a.click();URL.revokeObjectURL(a.href)}
-function importJSON(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);saveData();render();pulseTip('Imported.')}catch{alert('Invalid JSON.')}};r.readAsText(f);e.target.value=''}
-function showPublishGuide(){alert(lang==='ar'?'خطوات النشر عبر GitHub Pages:\n1) صدّر JSON من لوحة الإدارة.\n2) احفظه باسم content.json في جذر المشروع.\n3) ضع الملفات في assets/uploads/.\n4) نفّذ commit ثم push وسيتم النشر تلقائيًا.':'GitHub Pages publish steps:\n1) Export JSON from admin.\n2) Save as content.json in repo root.\n3) Put media in assets/uploads/.\n4) Commit + push, then Pages deploys automatically.')}
+        <section class="editor-card">
+          <div class="section-head">
+            <h2 data-en="Labels" data-ar="العناوين">Labels</h2>
+          </div>
+          <div class="grid two">
+            <label><span>Portfolio Title (EN)</span><input id="portfolioTitleEn" data-path="portfolio.title" data-lang-field="en"></label>
+            <label><span>Portfolio Title (AR)</span><input id="portfolioTitleAr" dir="rtl" data-path="portfolio.title" data-lang-field="ar"></label>
+          </div>
+          <div class="grid two">
+            <label><span>Portfolio Description (EN)</span><textarea id="portfolioDescEn" data-path="portfolio.description" data-lang-field="en"></textarea></label>
+            <label><span>Portfolio Description (AR)</span><textarea id="portfolioDescAr" dir="rtl" data-path="portfolio.description" data-lang-field="ar"></textarea></label>
+          </div>
+          <div class="grid two">
+            <label><span>CTA Portfolio (EN)</span><input id="ctaPortfolioEn" data-path="cta.portfolio" data-lang-field="en"></label>
+            <label><span>CTA Portfolio (AR)</span><input id="ctaPortfolioAr" dir="rtl" data-path="cta.portfolio" data-lang-field="ar"></label>
+          </div>
+          <div class="grid two">
+            <label><span>CTA Book (EN)</span><input id="ctaBookEn" data-path="cta.book" data-lang-field="en"></label>
+            <label><span>CTA Book (AR)</span><input id="ctaBookAr" dir="rtl" data-path="cta.book" data-lang-field="ar"></label>
+          </div>
+          <div class="grid two">
+            <label><span>Credentials Title (EN)</span><input id="credentialsTitleEn" data-path="credentialsTitle" data-lang-field="en"></label>
+            <label><span>Credentials Title (AR)</span><input id="credentialsTitleAr" dir="rtl" data-path="credentialsTitle" data-lang-field="ar"></label>
+          </div>
+          <div class="grid two">
+            <label><span>Contact Title (EN)</span><input id="contactTitleEn" data-path="contactTitle" data-lang-field="en"></label>
+            <label><span>Contact Title (AR)</span><input id="contactTitleAr" dir="rtl" data-path="contactTitle" data-lang-field="ar"></label>
+          </div>
+        </section>
+      </div>
 
-/* Theme */
-function setColorScheme(th){document.documentElement.style.colorScheme=th;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',th==='dark'?'#050710':'#f4f0ea')}
-function initTheme(){const th=localStorage.getItem(THEME_KEY)||'dark';document.documentElement.setAttribute('data-theme',th);setColorScheme(th);document.getElementById('themeToggle').textContent=th==='dark'?'☀️':'🌙'}
-function toggleTheme(){const c=document.documentElement.getAttribute('data-theme'),n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);setColorScheme(n);localStorage.setItem(THEME_KEY,n);document.getElementById('themeToggle').textContent=n==='dark'?'☀️':'🌙'}
-document.getElementById('themeToggle').addEventListener('click',toggleTheme);initTheme();
+      <div class="stack">
+        <section class="panel">
+          <h2 data-en="Brand Preview" data-ar="معاينة الهوية">Brand Preview</h2>
+          <div class="preview-box"><img id="brandLogoPreview" src="assets/uploads/brand/default-logo.svg" alt="Brand preview"></div>
+        </section>
+        <section class="panel">
+          <h2 data-en="Hero Preview" data-ar="معاينة القسم الرئيسي">Hero Preview</h2>
+          <div class="preview-box" id="heroMediaPreview"></div>
+        </section>
+        <section class="panel">
+          <h2 data-en="Validation" data-ar="التحقق">Validation</h2>
+          <ul class="validation-list" id="validationList"></ul>
+        </section>
+      </div>
+    </section>
 
-/* Language */
-function applyLang(){document.documentElement.setAttribute('data-lang',lang);document.documentElement.setAttribute('dir',lang==='ar'?'rtl':'ltr');document.documentElement.setAttribute('lang',lang);document.getElementById('langToggle').textContent=lang==='en'?'AR':'EN';document.querySelectorAll('[data-en]').forEach(el=>{el.textContent=el.getAttribute(`data-${lang}`)||el.getAttribute('data-en')||''});document.getElementById('editToggleBtn').textContent=lang==='ar'?`التحرير: ${editMode?'مفعل':'متوقف'}`:`Edit: ${editMode?'On':'Off'}`;render()}
-function toggleLang(){lang=lang==='en'?'ar':'en';localStorage.setItem(LANG_KEY,lang);applyLang()}
-document.getElementById('langToggle').addEventListener('click',toggleLang);
+    <section class="editor-card">
+      <div class="section-head">
+        <h2 data-en="Reels" data-ar="المعارض">Reels</h2>
+        <button type="button" id="addReel" data-en="Add Reel" data-ar="إضافة معرض">Add Reel</button>
+      </div>
+      <div id="reelsContainer"></div>
+    </section>
 
-/* Edit mode */
-function toggleEditMode(){editMode=!editMode;document.body.classList.toggle('edit-mode',editMode);document.getElementById('editToggleBtn').textContent=lang==='ar'?`التحرير: ${editMode?'مفعل':'متوقف'}`:`Edit: ${editMode?'On':'Off'}`;pulseTip(editMode?(lang==='ar'?'<strong>تم تفعيل التحرير</strong>. انقر مرتين على النص، واستخدم <strong>Cam</strong> للوسائط.':'<strong>Edit on</strong>. Double-click text, click <strong>Cam</strong> for media.'):(lang==='ar'?'تم إيقاف التحرير.':'Edit off.'))}
-function pulseTip(msg){document.querySelector('.tip').innerHTML=msg}
+    <section class="editor-card">
+      <div class="section-head">
+        <h2 data-en="Credentials" data-ar="الاعتمادات">Credentials</h2>
+        <button type="button" id="addCredential" data-en="Add Credential" data-ar="إضافة اعتماد">Add Credential</button>
+      </div>
+      <div id="credentialsContainer"></div>
+    </section>
 
-/* Render */
-function renderHeroMedia(){const w=document.getElementById('heroMediaWrap');const m=data.hero.mediaType==='video'?`<video src="${escapeAttr(data.hero.mediaUrl)}" autoplay muted loop playsinline></video>`:`<img src="${escapeAttr(data.hero.mediaUrl)}" alt="Featured">`;w.innerHTML=`${m}<div class="hud hud-tl"><div class="rec-dot"></div><span>REC</span></div><div class="hud hud-tr"><span id="timecode">00:00:00:00</span></div><div class="hud hud-bl"><span>ISO 800</span></div><div class="hud hud-br"><span>5600K</span></div><div class="crosshair"></div>`}
+    <section class="editor-card">
+      <div class="section-head">
+        <h2 data-en="Contacts" data-ar="التواصل">Contacts</h2>
+        <button type="button" id="addContact" data-en="Add Contact" data-ar="إضافة وسيلة تواصل">Add Contact</button>
+      </div>
+      <div id="contactsContainer"></div>
+    </section>
 
-function renderFrame(rid,item){return`<div class="frame" role="button" tabindex="0" aria-label="${escapeAttr(t(item.title)||'Untitled')} — ${item.type==='video'?'Video':'Image'}" onclick="handleFrameClick(event,'${rid}','${item.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();handleFrameClick(event,'${rid}','${item.id}')}"><div class="frame-actions"><button class="inline-btn" type="button" aria-label="Edit media" onclick="event.stopPropagation();openMediaModal('reelItem','${rid}','${item.id}')">Cam</button><button class="inline-btn" type="button" aria-label="Delete item" onclick="event.stopPropagation();removeMediaItem('${rid}','${item.id}')">Del</button></div>${item.type==='video'?`<video ${item.thumb?`poster="${escapeAttr(item.thumb)}"`:''}muted playsinline><source src="${escapeAttr(item.src)}"></video>`:`<img src="${escapeAttr(item.thumb||item.src)}" alt="${escapeAttr(t(item.title))}" loading="lazy">`}<span class="media-type" aria-hidden="true">${item.type==='video'?'VIDEO':'IMAGE'}</span><div class="frame-caption"><strong>${escapeHtml(t(item.title)||'Untitled')}</strong><span>${escapeHtml(t(item.description)||'')}</span></div></div>`}
+    <section class="panel">
+      <div class="section-head">
+        <h2 data-en="Draft + Publish" data-ar="المسودة والنشر">Draft + Publish</h2>
+      </div>
+      <p class="hint" data-en="Draft saves stay in localStorage. Publish pushes content.json to GitHub through the serverless proxy." data-ar="يتم حفظ المسودة محليًا في المتصفح. النشر يرسل content.json إلى GitHub عبر الوسيط الخلفي.">Draft saves stay in localStorage. Publish pushes content.json to GitHub through the serverless proxy.</p>
+      <div class="card-actions" style="margin-top:16px">
+        <button type="button" id="saveDraft" data-en="Save Draft" data-ar="حفظ المسودة">Save Draft</button>
+        <button type="button" class="button-primary" id="publishContent" data-en="Publish to GitHub" data-ar="نشر إلى GitHub">Publish to GitHub</button>
+      </div>
+    </section>
+  </main>
 
-function render(){
-  document.title=`Admin — ${data.hero.name}`;
-  document.getElementById('brandLogo').src=data.brand.logo;document.getElementById('brandMark').textContent=data.brand.mark;
-  document.getElementById('heroName').textContent=data.hero.name;document.getElementById('heroRole').textContent=t(data.hero.role);
-  document.getElementById('heroSummary').textContent=t(data.hero.summary);document.getElementById('heroSubtitle').textContent=t(data.hero.subtitle);
-  document.getElementById('heroSpecs').innerHTML=(Array.isArray(data.hero.specs)?data.hero.specs:[]).map(s=>`<span>${escapeHtml(s)}</span>`).join('');
-  document.getElementById('ctaPortfolio').textContent=t(data.cta?.portfolio)||'Access Portfolio ↓';
-  document.getElementById('ctaBook').textContent=t(data.cta?.book)||'Book Now';
-  document.getElementById('portfolioTitle').textContent=t(data.portfolio.title);document.getElementById('portfolioDesc').textContent=t(data.portfolio.description);
-  document.getElementById('credentialsTitle').textContent=t(data.credentialsTitle);document.getElementById('contactTitle').textContent=t(data.contactTitle);
-  renderHeroMedia();
-
-  document.getElementById('reelsContainer').innerHTML=(Array.isArray(data.reels)?data.reels:[]).map((reel,idx)=>{const rep=reel.items.length>1?[...reel.items,...reel.items]:reel.items;const dur=Math.max(16,reel.items.length*6);return`<div class="reel-block"><div class="reel-actions"><button class="inline-btn" type="button" onclick="openReelModal('${reel.id}')">Edit</button><button class="inline-btn" type="button" onclick="removeReel('${reel.id}')">Del</button></div><div class="reel-head"><div><div class="reel-title editable" data-path="reels.${idx}.title">${escapeHtml(t(reel.title))}</div><div class="reel-desc editable" data-path="reels.${idx}.description">${escapeHtml(t(reel.description))}</div></div></div><div class="film-strip"><div class="reel-track" style="animation-duration:${dur}s">${rep.map(i=>renderFrame(reel.id,i)).join('')||'<div style="padding:30px;font-weight:700;color:rgba(0,0,0,.4)">No items</div>'}</div><button class="inline-btn plus-under-reel" type="button" onclick="openMediaModal('reelAdd','${reel.id}')">+ Add</button></div></div>`}).join('');
-
-  document.getElementById('credentialsList').innerHTML=data.credentials.map((c,i)=>`<li><span class="cred-title${c.image?' has-image':''}" ${c.image?`onclick="openCredImage('${escapeAttr(c.image)}','${escapeAttr(t(c.title))}')"`:''}>${escapeHtml(t(c.title))}</span><span class="cred-year">${escapeHtml(c.year)}</span><button class="inline-btn" type="button" onclick="openCredModal(${i})">Edit</button><button class="inline-btn" type="button" onclick="removeCredential('${c.id}')">Del</button></li>`).join('');
-
-  document.getElementById('contactLinks').innerHTML=data.contacts.map((c,i)=>`<a href="${escapeAttr(c.href||'#')}" target="_blank" rel="noopener noreferrer" onclick="if(editMode){event.preventDefault();}"><span>${escapeHtml(t(c.label))}</span><span>→ ${escapeHtml(c.value)}</span><button class="inline-btn" type="button" onclick="event.preventDefault();removeContact('${c.id}')">Del</button></a>`).join('');
-
-  bindEditable();updateTimecode();document.body.classList.toggle('edit-mode',editMode);
-}
-
-/* Inline edit */
-function bindEditable(){document.querySelectorAll('.editable').forEach(el=>{el.ondblclick=()=>startInlineEdit(el)})}
-function startInlineEdit(el){if(!editMode||el.isContentEditable)return;const p=el.dataset.path;if(p==='hero.specs'){const raw=prompt('Specs (comma separated)',data.hero.specs.join(', '));if(raw!==null)data.hero.specs=raw.split(/\n|,/).map(s=>s.trim()).filter(Boolean);render();saveData();return}el.classList.add('is-editing');el.contentEditable='true';el.focus();document.execCommand?.('selectAll',false,null);const finish=()=>{el.contentEditable='false';el.classList.remove('is-editing');persistEdit(el)};el.onkeydown=e=>{if(e.key==='Enter'&&!el.classList.contains('hero-summary')&&!el.classList.contains('reel-desc')){e.preventDefault();finish()}if(e.key==='Escape'){e.preventDefault();render()}};el.onblur=finish}
-function persistEdit(el){const p=el.dataset.path;const v=el.textContent.trim();if(!p)return;if(p.startsWith('reelitem.')){const[,rid,iid,field]=p.split('.');const item=data.reels.find(r=>r.id===rid)?.items.find(i=>i.id===iid);if(item){const old=item[field];item[field]=tSet(old,v)}saveData();render();return}const old=pathGet(p);pathSet(p,tSet(old,v));saveData();render()}
-
-/* Lightbox */
-function handleFrameClick(e,rid,iid){if(editMode)return;openLightbox(rid,iid)}
-function openLightbox(rid,iid){const reel=data.reels.find(r=>r.id===rid);if(!reel)return;const item=reel.items.find(i=>i.id===iid);if(!item)return;document.getElementById('lightbox-content').innerHTML=item.type==='video'?`<video controls autoplay playsinline style="width:100%;max-height:78vh;"${item.thumb?` poster="${escapeAttr(item.thumb)}"`:''}><source src="${escapeAttr(item.src)}"></video>`:`<img src="${escapeAttr(item.src)}" alt="">`;document.getElementById('lbTitle').textContent=t(item.title)||'';document.getElementById('lbDesc').textContent=t(item.description)||'';document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
-function openCredImage(src,title){if(!src)return;document.getElementById('lightbox-content').innerHTML=`<img src="${escapeAttr(src)}" alt="${escapeAttr(title)}" style="max-height:78vh;width:100%;object-fit:contain;">`;document.getElementById('lbTitle').textContent=title;document.getElementById('lbDesc').textContent='';document.getElementById('lightbox').classList.add('active');document.body.style.overflow='hidden'}
-function closeLightbox(e){if(e&&e.target!==e.currentTarget&&!e.target.classList.contains('close-lb'))return;document.getElementById('lightbox').classList.remove('active');document.body.style.overflow='auto';const v=document.querySelector('#lightbox-content video');if(v)v.pause()}
-
-function updateTimecode(){const el=document.getElementById('timecode');if(!el)return;const n=new Date();el.textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':')+':'+String(Math.floor(Math.random()*24)).padStart(2,'0')}
-
-/* CRUD */
-function addReel(){data.reels.push({id:cryptoRandom(),title:{en:'New Reel',ar:'معرض جديد'},description:{en:'Description',ar:'أضف وصفًا مختصرًا هنا'},items:[]});saveData();render()}
-function removeReel(id){if(!confirm('Delete?'))return;data.reels=data.reels.filter(r=>r.id!==id);saveData();render()}
-function removeMediaItem(rid,iid){if(!confirm('Delete this item?'))return;const r=data.reels.find(r=>r.id===rid);if(r){r.items=r.items.filter(i=>i.id!==iid);saveData();render()}}
-function addCredential(){data.credentials.push({id:cryptoRandom(),title:{en:'New Certificate',ar:'شهادة جديدة'},year:'2026',image:''});saveData();render()}
-function removeCredential(id){data.credentials=data.credentials.filter(c=>c.id!==id);saveData();render()}
-function addContact(){data.contacts.push({id:cryptoRandom(),label:{en:'New',ar:'جديد'},value:'',href:'#'});saveData();render()}
-function removeContact(id){data.contacts=data.contacts.filter(c=>c.id!==id);saveData();render()}
-
-/* Modals */
-function openModal(html){document.getElementById('modalBox').innerHTML=html;document.getElementById('modalBackdrop').classList.add('open')}
-function closeModal(){document.getElementById('modalBackdrop').classList.remove('open')}
-
-function openReelModal(reelId){const reel=data.reels.find(r=>r.id===reelId);if(!reel)return;openModal(`<h3>Edit Reel</h3><div class="row2"><div class="field"><label>Title (EN)</label><input id="mRT_en" value="${escapeAttr(reel.title?.en||'')}"></div><div class="field"><label>Title (AR)</label><input id="mRT_ar" value="${escapeAttr(reel.title?.ar||'')}" dir="rtl"></div></div><div class="row2"><div class="field"><label>Description (EN)</label><textarea id="mRD_en">${escapeHtml(reel.description?.en||'')}</textarea></div><div class="field"><label>Description (AR)</label><textarea id="mRD_ar" dir="rtl">${escapeHtml(reel.description?.ar||'')}</textarea></div></div><div class="actions"><button onclick="saveReelModal('${reelId}')">Save</button><button onclick="openMediaModal('reelAdd','${reelId}')">+ Media</button><button onclick="closeModal()">Close</button></div>`)}
-function saveReelModal(id){const r=data.reels.find(r=>r.id===id);if(!r)return;r.title={en:document.getElementById('mRT_en').value.trim()||r.title.en,ar:document.getElementById('mRT_ar').value.trim()||r.title.ar};r.description={en:document.getElementById('mRD_en').value.trim()||r.description.en,ar:document.getElementById('mRD_ar').value.trim()||r.description.ar};saveData();render();closeModal()}
-
-function openCredModal(idx){const c=data.credentials[idx];openModal(`<h3>Edit Credential</h3><div class="row2"><div class="field"><label>Title (EN)</label><input id="mCT_en" value="${escapeAttr(c.title?.en||'')}"></div><div class="field"><label>Title (AR)</label><input id="mCT_ar" value="${escapeAttr(c.title?.ar||'')}" dir="rtl"></div></div><div class="field"><label>Year</label><input id="mCY" value="${escapeAttr(c.year)}"></div><div class="field"><label>Certificate Image URL</label><input id="mCI" value="${escapeAttr(c.image||'')}" placeholder="https://... or upload"></div><div class="field"><label>Upload Certificate Image</label><input id="mCIFile" type="file" accept="image/*"></div><div class="actions"><button onclick="saveCredModal(${idx})">Save</button><button onclick="closeModal()">Close</button></div>`)}
-function saveCredModal(idx){const c=data.credentials[idx];c.title={en:document.getElementById('mCT_en').value.trim()||c.title.en,ar:document.getElementById('mCT_ar').value.trim()||c.title.ar};c.year=document.getElementById('mCY').value.trim()||c.year;const f=document.getElementById('mCIFile').files[0];if(f){fileToDataUrl(f,url=>{c.image=url;saveData();render();closeModal()})}else{c.image=document.getElementById('mCI').value.trim()||c.image;saveData();render();closeModal()}}
-
-function openMediaModal(mode,reelId='',itemId=''){let title='Change Media';let cur={type:'image',src:'',thumb:'',title:{en:'',ar:''},description:{en:'',ar:''}};if(mode==='brandLogo'){title='Change Logo';cur.src=data.brand.logo}else if(mode==='heroMedia'){title='Hero Media';cur.type=data.hero.mediaType;cur.src=data.hero.mediaUrl}else if(mode==='reelItem'){title='Edit Item';const r=data.reels.find(r=>r.id===reelId);const i=r?.items.find(i=>i.id===itemId);if(i)cur=structuredClone(i)}else if(mode==='reelAdd'){title='Add File'}
-openModal(`<h3>${title}</h3>${mode==='brandLogo'?'':`<div class="row2"><div class="field"><label>Type</label><select id="mediaType"><option value="image"${cur.type==='image'?' selected':''}>Image</option><option value="video"${cur.type==='video'?' selected':''}>Video</option></select></div><div class="field"><label>Title (EN)</label><input id="mT_en" value="${escapeAttr(cur.title?.en||'')}"></div></div><div class="field"><label>Title (AR)</label><input id="mT_ar" value="${escapeAttr(cur.title?.ar||'')}" dir="rtl"></div><div class="row2"><div class="field"><label>Desc (EN)</label><textarea id="mD_en">${escapeHtml(cur.description?.en||'')}</textarea></div><div class="field"><label>Desc (AR)</label><textarea id="mD_ar" dir="rtl">${escapeHtml(cur.description?.ar||'')}</textarea></div></div>`}<div class="field"><label>${mode==='brandLogo'?'Logo URL':'Source URL'}</label><input id="mediaSrc" value="${escapeAttr(cur.src||'')}" placeholder="https://..."></div>${mode==='brandLogo'?'':`<div class="field"><label>Thumbnail URL</label><input id="mediaThumb" value="${escapeAttr(cur.thumb||'')}"></div>`}<div class="row2"><div class="field"><label>Upload file${mode==='reelAdd'?'s (multi)':''}</label><input id="mediaFile" type="file" accept="image/*,video/*" ${mode==='reelAdd'?'multiple':''}></div>${mode==='brandLogo'||mode==='heroMedia'?'':`<div class="field"><label>Upload thumb</label><input id="thumbFile" type="file" accept="image/*"></div>`}</div>${mode==='heroMedia'?`<div class="field"><label>Specs (comma)</label><textarea id="heroSpecsInput">${escapeHtml(data.hero.specs.join(', '))}</textarea></div>`:''}<div class="actions"><button onclick="saveMediaModal('${mode}','${reelId}','${itemId}')">Save</button><button onclick="closeModal()">Close</button></div>`)}
-
-async function saveMediaModal(mode,reelId='',itemId=''){
-  const fileInput=document.getElementById('mediaFile');
-  const mainFiles=Array.from(fileInput?.files||[]);
-  const mainFile=mainFiles[0],thumbFile=document.getElementById('thumbFile')?.files?.[0];
-  const type=document.getElementById('mediaType')?.value||'image',srcVal=document.getElementById('mediaSrc')?.value.trim()||'',thumbVal=document.getElementById('mediaThumb')?.value.trim()||'';
-  const titleObj={en:document.getElementById('mT_en')?.value.trim()||'Untitled',ar:document.getElementById('mT_ar')?.value.trim()||''};
-  const descObj={en:document.getElementById('mD_en')?.value.trim()||'',ar:document.getElementById('mD_ar')?.value.trim()||''};
-  const finish=(srcR,thumbR,typeR)=>{
-    if(mode==='brandLogo'){data.brand.logo=srcR||data.brand.logo}
-    else if(mode==='heroMedia'){data.hero.mediaUrl=srcR||data.hero.mediaUrl;data.hero.mediaType=typeR||type;const raw=document.getElementById('heroSpecsInput')?.value??'';data.hero.specs=raw.split(/\n|,/).map(s=>s.trim()).filter(Boolean)}
-    else if(mode==='reelItem'){const item=data.reels.find(r=>r.id===reelId)?.items.find(i=>i.id===itemId);if(item){item.type=typeR||type;item.title=titleObj;item.description=descObj;if(srcR)item.src=srcR;if(thumbR)item.thumb=thumbR;else if(thumbVal)item.thumb=thumbVal}}
-    else if(mode==='reelAdd'){const reel=data.reels.find(r=>r.id===reelId);if(reel)reel.items.push({id:cryptoRandom(),type:typeR||type,title:titleObj,description:descObj,src:srcR||srcVal,thumb:thumbR||thumbVal||srcR||srcVal})}
-    saveData();render();closeModal()};
-  if(mode==='reelAdd'&&mainFiles.length>1){
-    const reel=data.reels.find(r=>r.id===reelId);
-    if(!reel)return;
-    for(const f of mainFiles){
-      const {url,file}=await fileToDataUrlPromise(f);
-      const ft=file.type.startsWith('video')?'video':'image';
-      const base=file.name.replace(/\.[^.]+$/,'');
-      reel.items.push({id:cryptoRandom(),type:ft,title:{en:base||'Untitled',ar:base||'بدون عنوان'},description:{en:'',ar:''},src:url,thumb:url});
-    }
-    saveData();render();closeModal();return;
-  }
-  if(mainFile){fileToDataUrl(mainFile,(u,f)=>{const ft=f.type.startsWith('video')?'video':'image';if(thumbFile){fileToDataUrl(thumbFile,tu=>finish(u,tu,ft))}else finish(u,'',ft)})}else if(thumbFile){fileToDataUrl(thumbFile,tu=>finish(srcVal,tu,type))}else finish(srcVal,thumbVal,type)}
-
-/* Events */
-document.getElementById('modalBackdrop').addEventListener('click',e=>{if(e.target.id==='modalBackdrop')closeModal()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLightbox({target:document.getElementById('lightbox'),currentTarget:document.getElementById('lightbox')});closeModal()}});
-window.addEventListener('scroll',()=>{document.getElementById('topBar').classList.toggle('scrolled',window.scrollY>80)},{passive:true});
-setInterval(updateTimecode,1000);
-applyLang();
-setTimeout(()=>toggleEditMode(),500);
-</script>
+  <script type="module" src="./scripts/admin.js"></script>
 </body>
 </html>

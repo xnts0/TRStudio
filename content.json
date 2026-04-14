@@ -1,31 +1,131 @@
 {
   "brand": {
     "mark": "TB VISUALS",
-    "logo": "1000160206.jpg"
+    "logo": "assets/uploads/brand/default-logo.svg"
   },
   "hero": {
     "name": "TURKI",
-    "role": {"en": "DIRECTOR OF PHOTOGRAPHY", "ar": "مدير التصوير السينمائي"},
+    "role": {
+      "en": "DIRECTOR OF PHOTOGRAPHY",
+      "ar": "مدير التصوير السينمائي"
+    },
     "summary": {
       "en": "Capturing raw reality and transforming it into cinematic art. Specializing in high-end editorial photography and kinetic videography.",
       "ar": "أحوّل المشاهد الواقعية إلى لغة بصرية سينمائية، مع تركيز على التصوير التحريري الراقي والفيديو الحركي."
     },
-    "subtitle": {"en": "Commercials / Editorial / Motion / Creative Direction", "ar": "إعلانات / تصوير تحريري / فيديو حركي / إخراج إبداعي"},
+    "subtitle": {
+      "en": "Commercials / Editorial / Motion / Creative Direction",
+      "ar": "إعلانات / تصوير تحريري / فيديو حركي / إخراج إبداعي"
+    },
     "mediaType": "image",
-    "mediaUrl": "https://images.unsplash.com/photo-1554046920-90dcac824707?w=1000&q=80",
-    "specs": ["SONY α7S III", "24-70mm G-MASTER", "S-LOG3", "120FPS"]
+    "mediaUrl": "https://images.unsplash.com/photo-1554046920-90dcac824707?w=1200&q=80&auto=format&fit=crop",
+    "specs": [
+      "SONY α7S III",
+      "24-70mm G-MASTER",
+      "S-LOG3",
+      "120FPS"
+    ]
   },
   "portfolio": {
-    "title": {"en": "THE REEL", "ar": "المعرض"},
-    "description": {"en": "Selected motion and still work", "ar": "مختارات من أعمال الصورة والفيديو"}
+    "title": {
+      "en": "THE REEL",
+      "ar": "المعرض"
+    },
+    "description": {
+      "en": "Selected motion and still work",
+      "ar": "مختارات من أعمال الصورة والفيديو"
+    }
   },
   "cta": {
-    "portfolio": {"en": "Access Portfolio ↓", "ar": "تصفح المعرض ↓"},
-    "book": {"en": "Book Now", "ar": "احجز الآن"}
+    "portfolio": {
+      "en": "Access Portfolio ↓",
+      "ar": "تصفح المعرض ↓"
+    },
+    "book": {
+      "en": "Book Now",
+      "ar": "احجز الآن"
+    }
   },
-  "reels": [],
-  "credentialsTitle": {"en": "Credentials", "ar": "الاعتمادات"},
-  "credentials": [],
-  "contactTitle": {"en": "Direct Line", "ar": "تواصل مباشر"},
-  "contacts": []
+  "reels": [
+    {
+      "id": "reel-main",
+      "title": {
+        "en": "Editorial Motion",
+        "ar": "سرد بصري تحريري"
+      },
+      "description": {
+        "en": "A curated strip of visual direction, portrait work, atmosphere, and branded storytelling.",
+        "ar": "شريط مختار يجمع الإخراج البصري والبورتريه وبناء المزاج والسرد الإعلاني."
+      },
+      "items": [
+        {
+          "id": "shot-01",
+          "type": "image",
+          "title": {
+            "en": "Shot 1",
+            "ar": "لقطة أولى"
+          },
+          "description": {
+            "en": "Editorial portrait framing",
+            "ar": "تكوين بورتريه تحريري"
+          },
+          "src": "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80&auto=format&fit=crop",
+          "thumb": "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=700&q=80&auto=format&fit=crop"
+        },
+        {
+          "id": "shot-02",
+          "type": "video",
+          "title": {
+            "en": "Shot 2",
+            "ar": "لقطة ثانية"
+          },
+          "description": {
+            "en": "Raw video showcase",
+            "ar": "عرض فيديو خام"
+          },
+          "src": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "thumb": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=700&q=80&auto=format&fit=crop"
+        }
+      ]
+    }
+  ],
+  "credentialsTitle": {
+    "en": "Credentials",
+    "ar": "الاعتمادات"
+  },
+  "credentials": [
+    {
+      "id": "cred-01",
+      "title": {
+        "en": "Sony Alpha Cinema Master",
+        "ar": "اعتماد سوني ألفا للسينما"
+      },
+      "year": "2023",
+      "image": ""
+    }
+  ],
+  "contactTitle": {
+    "en": "Direct Line",
+    "ar": "تواصل مباشر"
+  },
+  "contacts": [
+    {
+      "id": "contact-01",
+      "label": {
+        "en": "Instagram",
+        "ar": "إنستغرام"
+      },
+      "value": "@turki_visuals",
+      "href": "https://instagram.com"
+    },
+    {
+      "id": "contact-02",
+      "label": {
+        "en": "Email",
+        "ar": "بريد إلكتروني"
+      },
+      "value": "booking@turki.com",
+      "href": "mailto:booking@turki.com"
+    }
+  ]
 }
