@@ -1,0 +1,8 @@
+{
+  "name": "trstudio-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check scripts/site.js && node --check scripts/admin.js && node --check api/github-client.js && node --check api/upload-media.js && node --check api/save-content.js && node --check api/content-state.js"
+  }
+}
