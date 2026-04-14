@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-theme="dark" data-lang="en">
+<html lang="en" dir="ltr" data-theme="dark" data-lang="en" style="color-scheme:dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#050710" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f4f0ea" media="(prefers-color-scheme: light)" />
 <title>TURKI | Director of Photography</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;700;800&family=Syne:wght@400;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
@@ -102,7 +105,7 @@ img,video{max-width:100%;display:block}
 .nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
 
 /* Nav toggles */
-.nav-toggle{width:36px;height:36px;border-radius:50%;border:1px solid var(--text-ghost);background:transparent;color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:all .3s cubic-bezier(.22,1,.36,1);flex-shrink:0}
+.nav-toggle{width:36px;height:36px;border-radius:50%;border:1px solid var(--text-ghost);background:transparent;color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:background .3s cubic-bezier(.22,1,.36,1),color .3s cubic-bezier(.22,1,.36,1),border-color .3s cubic-bezier(.22,1,.36,1),transform .3s cubic-bezier(.22,1,.36,1);flex-shrink:0}
 .nav-toggle:hover{background:var(--text-primary);color:var(--bg-deep);border-color:var(--text-primary);transform:scale(1.08)}
 .lang-toggle{font-size:.65rem;font-weight:700;letter-spacing:1px;width:auto;padding:0 12px;border-radius:999px}
 
@@ -116,7 +119,7 @@ img,video{max-width:100%;display:block}
 .hero-summary{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--text-dim);line-height:1.7;max-width:540px;margin-bottom:16px;font-style:italic;animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .5s both}
 .hero-subtitle{font-size:.78rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:42px;animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .6s both}
 .cta-row{display:flex;gap:16px;flex-wrap:wrap;animation:fadeSlideUp .8s cubic-bezier(.22,1,.36,1) .75s both}
-.cta-btn,.ghost-btn{padding:16px 30px;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;border:1px solid;cursor:pointer;position:relative;overflow:hidden;transition:all .35s cubic-bezier(.22,1,.36,1)}
+.cta-btn,.ghost-btn{padding:16px 30px;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;border:1px solid;cursor:pointer;position:relative;overflow:hidden;transition:color .35s cubic-bezier(.22,1,.36,1),border-color .35s cubic-bezier(.22,1,.36,1),box-shadow .35s cubic-bezier(.22,1,.36,1)}
 .cta-btn{background:transparent;color:var(--text-primary);border-color:var(--text-primary)}
 .cta-btn::before{content:'';position:absolute;inset:0;background:var(--cta-fill);transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.22,1,.36,1);z-index:-1}
 .cta-btn:hover{color:var(--cta-text-hover)}
@@ -194,7 +197,7 @@ img,video{max-width:100%;display:block}
 #lightbox-inner{max-width:min(1100px,92vw);width:100%}
 #lightbox-content{max-width:100%;max-height:78vh;margin:0 auto;border:1px solid var(--panel-border);box-shadow:0 60px 120px rgba(0,0,0,.4);background:#000}
 #lightbox-content img,#lightbox-content video{max-height:78vh;width:100%;object-fit:contain}
-.close-lb{position:absolute;top:28px;right:36px;color:var(--text-primary);border:1px solid var(--text-ghost);background:transparent;padding:10px 20px;cursor:pointer;font-size:.7rem;letter-spacing:2px;transition:all .3s cubic-bezier(.22,1,.36,1)}
+.close-lb{position:absolute;top:28px;right:36px;color:var(--text-primary);border:1px solid var(--text-ghost);background:transparent;padding:10px 20px;cursor:pointer;font-size:.7rem;letter-spacing:2px;transition:background .3s cubic-bezier(.22,1,.36,1),color .3s cubic-bezier(.22,1,.36,1),border-color .3s cubic-bezier(.22,1,.36,1)}
 .close-lb:hover{background:var(--text-primary);color:var(--bg-deep)}
 .lb-meta{margin-top:18px}
 .lb-meta h4{font-family:'Syne',sans-serif;font-size:1.4rem;margin-bottom:6px}
@@ -207,21 +210,67 @@ img,video{max-width:100%;display:block}
 @media(max-width:1000px){.hero-grid,.footer-section{grid-template-columns:1fr}.footer-section::before{display:none}.top-bar{padding-top:18px}.nav-links{display:none}.hero{padding-top:100px}.viewfinder-wrapper{transform:rotate(0);order:-1}.bio-content h1{font-size:clamp(3rem,12vw,5rem)}.film-strip{transform:rotate(0)}}
 @media(max-width:600px){.cta-row{flex-direction:column}.cta-btn,.ghost-btn{width:100%;text-align:center}}
 
+/* ══ Skip Link ══ */
+.skip-link{position:absolute;top:-100%;left:16px;z-index:100000;padding:12px 24px;background:var(--accent);color:var(--bg-deep);font-size:.75rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:0 0 8px 8px;transition:top .3s}
+.skip-link:focus{top:0}
+
+/* ══ Focus States ══ */
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.nav-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px;box-shadow:0 0 0 4px var(--accent-glow)}
+.cta-btn:focus-visible,.ghost-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.nav-links a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.frame:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.close-lb:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.contact-links a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* ══ Touch ══ */
+button,a,.frame,.nav-toggle{touch-action:manipulation;-webkit-tap-highlight-color:rgba(201,168,76,.15)}
+
+/* ══ Hamburger Menu ══ */
+.menu-toggle{display:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--text-ghost);background:transparent;color:var(--text-primary);cursor:pointer;align-items:center;justify-content:center;font-size:1.1rem;transition:background .3s,color .3s,border-color .3s,transform .3s;flex-shrink:0}
+.menu-toggle:hover{background:var(--text-primary);color:var(--bg-deep);border-color:var(--text-primary);transform:scale(1.08)}
+.mobile-nav{display:none;position:fixed;inset:0;z-index:999;background:var(--panel);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:32px;overscroll-behavior:contain}
+.mobile-nav.active{display:flex}
+.mobile-nav a{color:var(--text-primary);text-decoration:none;font-size:1.2rem;letter-spacing:6px;text-transform:uppercase;opacity:.7;transition:opacity .3s,color .3s}
+.mobile-nav a:hover,.mobile-nav a:focus-visible{opacity:1;color:var(--accent)}
+.mobile-nav-close{position:absolute;top:28px;right:28px;width:40px;height:40px;border-radius:50%;border:1px solid var(--text-ghost);background:transparent;color:var(--text-primary);cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:background .3s,color .3s,border-color .3s}
+.mobile-nav-close:hover{background:var(--text-primary);color:var(--bg-deep);border-color:var(--text-primary)}
+
+/* ══ Heading Wrap ══ */
+.bio-content h1,.section-title,.reel-title{text-wrap:balance}
+
+/* ══ Reduced Motion ══ */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important}
+  .reel-track{animation:none !important}
+  .film-strip{transform:none !important}
+  .viewfinder-wrapper{transform:none !important}
+  .lcd-screen:hover img,.lcd-screen:hover video{transform:none}
+  .frame:hover img,.frame:hover video{transform:none}
+}
+
+/* ══ Lightbox Overscroll ══ */
+#lightbox{overscroll-behavior:contain}
+
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--bg-deep)}
 ::-webkit-scrollbar-thumb{background:var(--text-ghost);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:var(--text-dim)}
+
+/* ══ Responsive ══ */
+@media(max-width:1000px){.menu-toggle{display:flex}}
 </style>
 </head>
 <body>
-<div class="ambient-bg"></div>
-<div class="grain"></div>
-<div class="scanlines"></div>
+<a class="skip-link" href="#work">Skip to Content</a>
+<div class="ambient-bg" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="scanlines" aria-hidden="true"></div>
 
-<nav class="top-bar" id="topBar">
+<nav class="top-bar" id="topBar" aria-label="Main navigation">
   <div class="brand-wrap">
-    <img class="brand-logo" id="brandLogo" src="1000160206.jpg" alt="Logo">
-    <div class="brand-mark" id="brandMark">TB VISUALS</div>
+    <img class="brand-logo" id="brandLogo" src="1000160206.jpg" alt="TB Visuals — Home" width="56" height="56">
+    <div class="brand-mark" id="brandMark" translate="no">TB VISUALS</div>
   </div>
   <div class="nav-right">
     <div class="nav-links">
@@ -231,8 +280,17 @@ img,video{max-width:100%;display:block}
     </div>
     <button class="nav-toggle lang-toggle" id="langToggle" aria-label="Toggle language">EN</button>
     <button class="nav-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">☰</button>
   </div>
 </nav>
+
+<!-- Mobile Nav Overlay -->
+<div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Mobile navigation">
+  <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+  <a href="#work" data-en="Portfolio" data-ar="المعرض" class="mobile-nav-link">Portfolio</a>
+  <a href="#credentials" data-en="Credentials" data-ar="الاعتمادات" class="mobile-nav-link">Credentials</a>
+  <a href="#contact" data-en="Contact" data-ar="تواصل" class="mobile-nav-link">Contact</a>
+</div>
 
 <section class="hero">
   <div class="hero-grid">
@@ -274,8 +332,8 @@ img,video{max-width:100%;display:block}
 
 <div class="copyright">&copy; 2026 Turki — All Rights Reserved</div>
 
-<div id="lightbox" onclick="closeLightbox(event)">
-  <button class="close-lb" type="button" onclick="closeLightbox(event)">CLOSE ✕</button>
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Media viewer" onclick="closeLightbox(event)">
+  <button class="close-lb" type="button" onclick="closeLightbox(event)" aria-label="Close viewer">CLOSE ✕</button>
   <div id="lightbox-inner">
     <div id="lightbox-content"></div>
     <div class="lb-meta"><h4 id="lbTitle"></h4><p id="lbDesc"></p></div>
@@ -349,8 +407,9 @@ let data=clone(defaultData);
 let lang=localStorage.getItem(LANG_KEY)||'en';
 
 /* Theme */
-function initTheme(){const th=localStorage.getItem(THEME_KEY)||'dark';document.documentElement.setAttribute('data-theme',th);document.getElementById('themeToggle').textContent=th==='dark'?'☀️':'🌙'}
-function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem(THEME_KEY,n);document.getElementById('themeToggle').textContent=n==='dark'?'☀️':'🌙'}
+function setColorScheme(th){document.documentElement.style.colorScheme=th;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',th==='dark'?'#050710':'#f4f0ea')}
+function initTheme(){const th=localStorage.getItem(THEME_KEY)||'dark';document.documentElement.setAttribute('data-theme',th);setColorScheme(th);document.getElementById('themeToggle').textContent=th==='dark'?'☀️':'🌙'}
+function toggleTheme(){const c=document.documentElement.getAttribute('data-theme');const n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);setColorScheme(n);localStorage.setItem(THEME_KEY,n);document.getElementById('themeToggle').textContent=n==='dark'?'☀️':'🌙'}
 document.getElementById('themeToggle').addEventListener('click',toggleTheme);
 initTheme();
 
@@ -376,9 +435,9 @@ function renderHeroMedia(){
 }
 
 function renderFrame(rid,item){
-  return`<div class="frame" onclick="openLightbox('${rid}','${item.id}')">
-    ${item.type==='video'?`<video ${item.thumb?`poster="${escapeAttr(item.thumb)}"`:''}muted playsinline><source src="${escapeAttr(item.src)}"></video>`:`<img src="${escapeAttr(item.thumb||item.src)}" alt="${escapeAttr(t(item.title))}">`}
-    <span class="media-type">${item.type==='video'?'VIDEO':'IMAGE'}</span>
+  return`<div class="frame" role="button" tabindex="0" aria-label="${escapeAttr(t(item.title)||'Untitled')} — ${item.type==='video'?'Video':'Image'}" onclick="openLightbox('${rid}','${item.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLightbox('${rid}','${item.id}')}">
+    ${item.type==='video'?`<video ${item.thumb?`poster="${escapeAttr(item.thumb)}"`:''}muted playsinline><source src="${escapeAttr(item.src)}"></video>`:`<img src="${escapeAttr(item.thumb||item.src)}" alt="${escapeAttr(t(item.title))}" loading="lazy">`}
+    <span class="media-type" aria-hidden="true">${item.type==='video'?'VIDEO':'IMAGE'}</span>
     <div class="frame-caption"><strong>${escapeHtml(t(item.title)||'Untitled')}</strong><span>${escapeHtml(t(item.description)||'')}</span></div>
   </div>`;
 }
@@ -447,10 +506,22 @@ function closeLightbox(e){
 /* Timecode */
 function updateTimecode(){const el=document.getElementById('timecode');if(!el)return;const n=new Date();el.textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(v=>String(v).padStart(2,'0')).join(':')+':'+String(Math.floor(Math.random()*24)).padStart(2,'0')}
 
+/* Mobile Nav */
+function openMobileNav(){const nav=document.getElementById('mobileNav');nav.classList.add('active');document.body.style.overflow='hidden';document.getElementById('menuToggle').setAttribute('aria-expanded','true');nav.querySelector('.mobile-nav-close').focus()}
+function closeMobileNav(){const nav=document.getElementById('mobileNav');nav.classList.remove('active');document.body.style.overflow='';document.getElementById('menuToggle').setAttribute('aria-expanded','false');document.getElementById('menuToggle').focus()}
+document.getElementById('menuToggle').addEventListener('click',openMobileNav);
+document.getElementById('mobileNavClose').addEventListener('click',closeMobileNav);
+document.querySelectorAll('.mobile-nav-link').forEach(a=>a.addEventListener('click',closeMobileNav));
+
 /* Events */
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox({target:document.getElementById('lightbox'),currentTarget:document.getElementById('lightbox')})});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(document.getElementById('mobileNav').classList.contains('active')){closeMobileNav();return}
+    closeLightbox({target:document.getElementById('lightbox'),currentTarget:document.getElementById('lightbox')});
+  }
+});
 window.addEventListener('scroll',()=>{document.getElementById('topBar').classList.toggle('scrolled',window.scrollY>80)},{passive:true});
-setInterval(updateTimecode,1000/24);
+setInterval(updateTimecode,1000);
 loadData().then(d=>{data=d;render();});
 </script>
 </body>
